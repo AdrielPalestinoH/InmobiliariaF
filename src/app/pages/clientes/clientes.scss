@@ -1,0 +1,17 @@
+.clientes-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  h3 {
+    color: #2c3e50;
+  }
+
+  .card {
+    border-radius: 8px;
+  }
+
+  table th {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+}

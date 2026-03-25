@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-primary">Mis Créditos</h2>
+
+  <!-- 🧾 Tabla de créditos -->
+  <div class="card shadow-sm mb-4" *ngIf="creditos.length > 0; else sinCreditos">
+    <div class="card-body">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Inmueble</th>
+            <th>Total</th>
+            <th>Pagos</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of creditos; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ c.inmuebleDescripcion }}</td>
+            <td>{{ c.total | currency:'USD' }}</td>
+            <td>{{ c.totalPagos }}</td>
+            <td class="text-end">
+              <button class="btn btn-outline-primary btn-sm" (click)="verPagos(c)">
+                Ver Pagos
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🏠 Mensaje si no hay créditos -->
+  <ng-template #sinCreditos>
+    <div class="alert alert-info text-center">
+      No tienes créditos registrados aún.
+    </div>
+  </ng-template>
+
+  <!-- 💰 Detalles del crédito seleccionado -->
+  <div *ngIf="creditoSeleccionado" class="card shadow-sm mt-4">
+    <div class="card-header bg-light fw-semibold">
+      Pagos de {{ creditoSeleccionado.inmuebleDescripcion }}
+    </div>
+    <div class="card-body">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha Programada</th>
+            <th>Monto</th>
+            <th>Estatus</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of detalles; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ p.fechaProgramada | date:'yyyy-MM-dd' }}</td>
+            <td>{{ p.precio | currency:'USD' }}</td>
+            <td>
+              <span
+                [class]="p.estatus === 1 ? 'text-success fw-semibold' : 'text-warning fw-semibold'">
+                {{ p.estatus === 1 ? 'Pagado' : 'Pendiente' }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button
+                *ngIf="p.estatus === 0"
+                class="btn btn-success btn-sm"
+                (click)="pagarConPaypal(p)"
+              >
+                💳 Pagar con PayPal
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end mt-3">
+        <button class="btn btn-secondary btn-sm" (click)="creditoSeleccionado = null">
+          ← Volver a mis créditos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

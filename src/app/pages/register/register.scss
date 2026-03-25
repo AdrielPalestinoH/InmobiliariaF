@@ -1,0 +1,47 @@
+.footer {
+  background-image: url('/assets/footer.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  padding-top: 40px;
+  padding-bottom: 40px;
+  position: relative;
+
+  // Capa oscura semitransparente para mejor contraste
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+  }
+
+  // Asegura que el contenido quede sobre la capa oscura
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  hr {
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  input.form-control {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+  }
+}
+
+.footer {
+  background-color: #343a40;
+}
+
+.card {
+  border-radius: 12px;
+}

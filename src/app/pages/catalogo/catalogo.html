@@ -1,0 +1,20 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Catálogo de Inmuebles</h2>
+  <div class="row">
+    @for (inmueble of inmuebles; track inmueble.id) {
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <img src="https://picsum.photos/400/200?random={{inmueble.id}}" class="card-img-top" alt="{{ inmueble.descripcion }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ inmueble.tipoDescripcion }}</h5>
+            <p class="card-text">{{ inmueble.descripcion }}</p>
+            <p><strong>Precio:</strong> {{ inmueble.precio | currency:'USD' }}</p>
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-primary btn-sm">Ver detalle</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

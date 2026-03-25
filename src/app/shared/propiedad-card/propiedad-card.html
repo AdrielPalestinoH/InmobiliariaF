@@ -1,0 +1,49 @@
+<div class="card h-100 shadow-sm">
+    <div class="property-card__media">
+        <span class="property-card__badge">{{ inmueble.estatus || 'Venta' }}</span>
+        <img class="property-card__img" [src]="inmueble.imagen" [alt]="inmueble.titulo" loading="lazy" />
+    </div>
+
+    <div class="card-body">
+        <h5 class="card-title">{{ inmueble.titulo }}</h5>
+
+        <div class="d-flex flex-wrap gap-3 small mt-2">
+            <ng-container *ngIf="inmueble.caracteristicas?.length; else legacyFeatures">
+                <span class="d-inline-flex align-items-center gap-2" *ngFor="let c of inmueble.caracteristicas">
+                    <i [class]="c.icon"></i>
+                    <strong>{{ c.value }}</strong>
+                    <span>{{ c.label }}</span>
+                </span>
+            </ng-container>
+
+            <ng-template #legacyFeatures>
+                <span class="d-inline-flex align-items-center gap-2" *ngIf="inmueble.recamaras != null">
+                    <i class="bi bi-houses"></i>
+                    <strong>{{ inmueble.recamaras }}</strong>
+                </span>
+                <span class="d-inline-flex align-items-center gap-2" *ngIf="inmueble.banos != null">
+                    <i class="bi bi-badge-wc"></i>
+                    <strong>{{ inmueble.banos }}</strong>
+                </span>
+                <span class="d-inline-flex align-items-center gap-2" *ngIf="inmueble.estacionamientos != null">
+                    <i class="bi bi-car-front"></i>
+                    <strong>{{ inmueble.estacionamientos }}</strong>
+                </span>
+                <span class="d-inline-flex align-items-center gap-2" *ngIf="inmueble.metros2 != null">
+                    <i class="bi-rulers"></i>
+                    <strong>{{ inmueble.metros2 }}</strong>
+                    <span>m²</span>
+                </span>
+            </ng-template>
+        </div>
+        <p class="mb-0 mt-3">
+            <strong>MX {{ inmueble.precio | number }}</strong>
+        </p>
+    </div>
+    <div class="card-footer text-end">
+        <button class="btn btn-outline-primary btn-sm property-card__btn"
+            [routerLink]="['/detalle-propiedad', inmueble.id]">
+            Ver detalle
+        </button>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Gestión de Créditos</h2>
+
+  <!-- Botón para nuevo crédito -->
+  <div class="text-end mb-3">
+    <button class="btn btn-success" (click)="nuevoCredito()">+ Nuevo Crédito</button>
+  </div>
+
+  <!-- Listado -->
+  <div *ngIf="!mostrarFormulario">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Inmueble</th>
+          <th>Total</th>
+          <th>Pagos</th>
+          <th>Estatus</th>
+          <th>Referencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of creditos; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ c.usuarioNombre }}</td>
+          <td>{{ c.inmuebleDescripcion }}</td>
+          <td>{{ c.total | currency:'USD' }}</td>
+          <td>{{ c.totalPagos }}</td>
+          <td>{{ c.estatus }}</td>
+          <td>{{ c.referencia }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" (click)="editar(c)">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Formulario de alta / edición -->
+  <div *ngIf="mostrarFormulario" class="card p-4 shadow-sm">
+    <h4 class="mb-3">{{ nuevo.id ? 'Editar Crédito' : 'Nuevo Crédito' }}</h4>
+
+    <form (ngSubmit)="nuevo.id ? reestructurar() : guardar()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>Cliente</label>
+          <select [(ngModel)]="nuevo.usuarioId" name="usuarioId" class="form-select" required>
+            <option value="">Seleccione...</option>
+            <option *ngFor="let u of clientes" [value]="u.id">{{ u.nombre }} {{ u.apellidos }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>Inmueble</label>
+          <select [(ngModel)]="nuevo.inmuebleId" name="inmuebleId" class="form-select" required>
+            <option value="">Seleccione...</option>
+            <option *ngFor="let i of inmuebles" [value]="i.id">{{ i.descripcion }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Total</label>
+          <input [(ngModel)]="nuevo.total" name="total" type="number" class="form-control" required />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Total Pagos</label>
+          <input [(ngModel)]="nuevo.totalPagos" name="totalPagos" type="number" class="form-control" required />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Frecuencia de Pago</label>
+          <select [(ngModel)]="nuevo.frecuencia" name="frecuencia" class="form-select" required>
+            <option value="SEMANAL">Semanal</option>
+            <option value="QUINCENAL">Quincenal</option>
+            <option value="MENSUAL">Mensual</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>Fecha Inicio</label>
+          <input [(ngModel)]="nuevo.fechaInicio" name="fechaInicio" type="date" class="form-control" required />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>Fecha Final</label>
+          <input [(ngModel)]="nuevo.fechaFinal" name="fechaFinal" type="date" class="form-control" />
+        </div>
+
+        <div class="col-md-12 mb-3">
+          <label>Referencia</label>
+          <input [(ngModel)]="nuevo.referencia" name="referencia" class="form-control" />
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button *ngIf="!nuevo.id" type="submit" class="btn btn-success">Guardar</button>
+        <button *ngIf="nuevo.id" type="submit" class="btn btn-warning">Reestructurar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Pagos de Créditos</h2>
+
+  <!-- Listado de créditos -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white fw-semibold">Selecciona un crédito</div>
+    <div class="card-body">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Cliente</th>
+            <th>Inmueble</th>
+            <th>Total</th>
+            <th>Pagos</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of creditos">
+            <td>{{ c.usuarioNombre }}</td>
+            <td>{{ c.inmuebleDescripcion }}</td>
+            <td>{{ c.total | currency:'USD' }}</td>
+            <td>{{ c.totalPagos }}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="verDetalles(c)">
+                Ver Detalles
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detalles del crédito -->
+  <div *ngIf="mostrarDetalles" class="mt-5">
+    <h4 class="mb-3">
+      Pagos programados de
+      <span class="text-primary">{{ creditoSeleccionado.usuarioNombre }}</span>
+    </h4>
+
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Fecha Programada</th>
+          <th>Monto</th>
+          <th>Estatus</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of detalles; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ d.fechaProgramada | date:'yyyy-MM-dd' }}</td>
+          <td>{{ d.precio | currency:'USD' }}</td>
+          <td>
+            <span [class]="d.estatus === 1 ? 'text-success fw-semibold' : 'text-warning fw-semibold'">
+              {{ d.estatus === 1 ? 'Pagado' : 'Pendiente' }}
+            </span>
+          </td>
+          <td class="text-center">
+            <button
+              *ngIf="d.estatus === 0"
+              class="btn btn-success btn-sm"
+              (click)="abrirPago(d)">
+              💵 Pagar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de pago -->
+  <div *ngIf="mostrarFormularioPago" class="modal-backdrop">
+    <div class="modal-content-box">
+      <div class="modal-header">
+        <h5 class="m-0">Registrar Pago</h5>
+        <button class="btn-close" (click)="mostrarFormularioPago = false"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Método de Pago</label>
+          <select class="form-select" [(ngModel)]="nuevoPago.metodoPagoId">
+            <option value="">Seleccione</option>
+            <option *ngFor="let m of metodos" [value]="m.id">{{ m.descripcion }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Monto</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="nuevoPago.totalAbonado"
+            readonly
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Referencia</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="nuevoPago.referencia"
+            placeholder="Ej. Pago en efectivo, transferencia..."
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="mostrarFormularioPago = false">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="guardarPago()">Guardar Pago</button>
+      </div>
+    </div>
+  </div>
+</div>

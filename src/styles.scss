@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+:root {
+  --body-font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --body-font-size: 16px;
+  --body-font-style: normal;
+  --body-font-weight: 400;
+  --body-line-height: 1.6;
+  --body-color: #111;
+  --body-text-decoration: none;
+  --body-text-transform: none;
+  --body-letter-spacing: 0px;
+  --app-bg: #ffffff;
+}
+
+html, body {
+  background: var(--app-bg);
+}
+
+.page-content {
+  padding-top: 90px; // ajustamos según la altura real del navbar
+}

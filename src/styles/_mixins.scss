@@ -1,0 +1,45 @@
+// src/_mixins.scss
+@mixin bg-cover($img, $pos: center) {
+  background-image: url(#{$img});
+  background-size: cover;
+  background-position: $pos;
+  background-repeat: no-repeat;
+}
+
+@mixin overlay($color: #000, $opacity: 0.5, $z: 0) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba($color, $opacity);
+    z-index: $z;
+  }
+}
+
+@mixin content-over($z: 1) {
+  position: relative;
+  z-index: $z;
+}
+
+@mixin light-hr($alpha: 0.4) {
+  border-color: rgba(255, 255, 255, $alpha);
+}
+
+@mixin glass-input($alpha: 0.8) {
+  background-color: rgba(255, 255, 255, $alpha);
+  border: none;
+}
+
+@mixin body-text {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size);
+  font-style: var(--body-font-style);
+  font-weight: var(--body-font-weight);
+  line-height: var(--body-line-height);
+  color: var(--body-color);
+  text-decoration: var(--body-text-decoration);
+  text-transform: var(--body-text-transform);
+  letter-spacing: var(--body-letter-spacing);
+}

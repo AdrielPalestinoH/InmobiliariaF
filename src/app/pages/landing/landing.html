@@ -1,0 +1,59 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Navbar -->
+  <app-navbar></app-navbar>
+  <!-- Hero -->
+  <section class="hero">
+    <video class="hero__video" src="https://videos.pexels.com/video-files/15901226/15901226-hd_1920_1080_60fps.mp4"
+      autoplay muted loop playsinline></video>
+
+    <div class="hero__overlay">
+      <div>
+        <h1>Bienvenido a Tu Casa</h1>
+        <p>
+          Descubre la mejor opcion para un Terreno en Real del Mar, a solo 25 minutos del Ayuntamiento de
+          San Jose del Cabo.
+        </p>
+        <a routerLink="/propiedades" class="btn hero__btn btn-lg">Ver propiedades</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="welcome" id="bienvenidos">
+    <div class="welcome__container">
+      <!-- Izquierda -->
+      <div class="welcome__left">
+        <h1 class="welcome__title">Bienvenidos</h1>
+        <h2 class="welcome__subtitle">Tu Casa Group Holdings LLC</h2>
+
+        <p class="welcome__text">
+          Grupo Tu Casa ® ofrece el más alto retorno de inversión Real del Mar, Cabo del Este, a solo 25
+          minutos de San José del Cabo, BCS.
+        </p>
+
+        <a class="welcome__btn" href="https://maps.app.goo.gl/YiicozUr7LF7bo277" target="_blank" rel="noopener">
+          Ubicacion
+        </a>
+      </div>
+
+      <!-- Derecha -->
+      <div class="welcome__right">
+        <div class="welcome__media">
+          <img class="welcome__image"
+            src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=548,h=544,fit=crop/Ylev0oRQBQcDb42r/dji_0234-AE0ox84qGWu6yM6g.JPG"
+            alt="Vista aérea de Real del Mar, Cabo del Este" loading="eager" />
+
+          <div class="welcome__badge">
+            <div class="welcome__badge-number">350+</div>
+            <div class="welcome__badge-label">Lotes a la venta</div>
+          </div>
+
+          <div class="welcome__corner">
+            <div class="welcome__corner-big">+80 lotes ya</div>
+            <div class="welcome__corner-big">vendidos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <app-footer></app-footer>
+</div>

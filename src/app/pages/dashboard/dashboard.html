@@ -1,0 +1,33 @@
+<div class="dashboard-container">
+  <div class="stats-grid">
+    <!-- Clientes -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <i class="bi bi-people-fill icon"></i>
+        <span>Clientes</span>
+      </div>
+      <h2 class="stat-value">{{ totalClientes }}</h2>
+      <p class="stat-label">Registrados</p>
+    </div>
+
+    <!-- Pagos -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <i class="bi bi-cash-stack icon"></i>
+        <span>Pagos</span>
+      </div>
+      <h2 class="stat-value">{{ totalPagos | currency:'USD' }}</h2>
+      <p class="stat-label">Total acumulado</p>
+    </div>
+
+    <!-- Productos / Inmuebles -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <i class="bi bi-house-door-fill icon"></i>
+        <span>Inmuebles</span>
+      </div>
+      <h2 class="stat-value">{{ totalInmuebles }}</h2>
+      <p class="stat-label">Disponibles</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<p>alta-inmueble works!</p>
+<div class="container mt-4">
+  <h2>Alta de Inmueble</h2>
+
+  <form (ngSubmit)="guardar()" #f="ngForm">
+    <div class="mb-3">
+      <label>Descripción</label>
+      <input type="text" class="form-control" [(ngModel)]="inmueble.descripcion" name="descripcion" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Precio</label>
+      <input type="number" class="form-control" [(ngModel)]="inmueble.precio" name="precio" required>
+    </div>
+
+    <div class="mb-3">
+      <label>Estado</label>
+      <select class="form-select" [(ngModel)]="inmueble.estadoId" name="estadoId" required>
+        <option value="">Seleccione...</option>
+        <option *ngFor="let e of estados" [value]="e.id">{{ e.descripcion }}</option>
+    </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Tipo</label>
+      <select class="form-select" [(ngModel)]="inmueble.tipoId" name="tipoId" required>
+        <option value="">Seleccione...</option>
+        <option *ngFor="let t of tipos" [value]="t.id">{{ t.descripcion }}</option>
+      </select>
+    </div>
+
+    <button class="btn btn-success" type="submit" [disabled]="f.invalid">Guardar</button>
+  </form>
+</div>

@@ -1,0 +1,126 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Navbar -->
+  <app-navbar></app-navbar>
+  <!-- Detalles generales de la propiedad -->
+  <div class="container my-5">
+    <div *ngIf="inmueble" class="row">
+      <!-- Carrousel con imagenes de la propiedad -->
+      <div class="col-md-8">
+        <div id="inmuebleCarousel" class="carousel slide rounded shadow-sm mb-4" data-bs-ride="carousel">
+          <div class="carousel-indicators" *ngIf="(inmueble.imagenes?.length || (inmueble.imagen ? 1 : 0)) > 1">
+            <button *ngFor="
+                let img of (
+                  inmueble.imagenes?.length
+                    ? inmueble.imagenes
+                    : inmueble.imagen
+                      ? [inmueble.imagen]
+                      : ['https://placehold.co/1200x675?text=Sin+imagen']
+                );
+                let i = index
+              " type="button" data-bs-target="#inmuebleCarousel" [attr.data-bs-slide-to]="i" [class.active]="i === 0"
+              [attr.aria-current]="i === 0 ? 'true' : null" [attr.aria-label]="'Slide ' + (i + 1)"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item"
+              *ngFor="let img of (inmueble.imagenes?.length ? inmueble.imagenes : (inmueble.imagen ? [inmueble.imagen] : ['https://placehold.co/1200x675?text=Sin+imagen'])); let i = index"
+              [class.active]="i === 0">
+              <img class="d-block w-100" [src]="img"
+                [alt]="(inmueble.descripcion || 'Imagen de inmueble') + ' ' + (i + 1)"
+                style="height: 400px; object-fit: cover;" />
+            </div>
+          </div>
+          <ng-container *ngIf="(inmueble.imagenes?.length || (inmueble.imagen ? 1 : 0)) > 1">
+            <button class="carousel-control-prev" type="button" data-bs-target="#inmuebleCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#inmuebleCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </ng-container>
+        </div>
+        <div class="descripcion__container mt-4">
+
+          <!-- Detalles de la propiedad-->
+          <div class="row g-3 align-items-start">
+            <div class="col-12 col-md-3">
+              <h6 class="fw-bold mb-0">Detalles:</h6>
+            </div>
+            <div class="col-12 col-md-9">
+              <div class="row gy-2">
+                <div class="col-5 col-sm-4 text-muted">Tipo:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.tipo }}</div>
+
+                <div class="col-5 col-sm-4 text-muted">ID:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.id }}</div>
+
+                <div class="col-5 col-sm-4 text-muted">Recámaras:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.recamaras }}</div>
+
+                <div class="col-5 col-sm-4 text-muted">Baños:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.banos }}</div>
+
+                <div class="col-5 col-sm-4 text-muted">Estacionamiento:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.estacionamientos }}</div>
+
+                <div class="col-5 col-sm-4 text-muted">Construcción:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.metros2 }} m²</div>
+
+                <div class="col-5 col-sm-4 text-muted">Precio:</div>
+                <div class="col-7 col-sm-8 fw-semibold">{{ inmueble.precio | currency:'USD' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descripción del inmueble -->
+          <div class="row g-3 align-items-start mt-4">
+            <div class="col-12 col-md-3">
+              <h6 class="fw-bold mb-0">Descripción:</h6>
+            </div>
+            <div class="col-12 col-md-9">
+              <p class="mb-0" style="text-align: justify;">
+                {{ inmueble.descripcion }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="col-12 col-md-4 mt-4 mt-md-0">
+        <div class="contact-card p-4 shadow-sm border rounded-4" style="background-color: #e1e6f9;">
+          <h5 class="text-center fw-semibold mb-3">Solicitar información</h5>
+          <form (ngSubmit)="enviarContacto()">
+            <div class="d-grid gap-3">
+              <input class="form-control form-control-md mb-2" [(ngModel)]="contacto.nombre" name="nombre"
+                placeholder="Tu nombre" required />
+              <input class="form-control form-control-md mb-2" [(ngModel)]="contacto.email" name="email"
+                placeholder="Email" required />
+              <input class="form-control form-control-md mb-2" [(ngModel)]="contacto.telefono" name="telefono"
+                placeholder="Teléfono" required />
+              <textarea class="form-control mb-3" [(ngModel)]="contacto.mensaje" name="mensaje" rows="5"
+                placeholder="Me interesa esta propiedad y quiero recibir más información. ¡Gracias!"></textarea>
+
+              <button type="submit" class="btn btn-outline-primary btn-md property-card__btn w-100">
+                Enviar
+              </button>
+
+              <a class="btn btn-outline-success btn-md"
+                href="https://wa.me/526643643176?text=Hola,%20me%20interesa%20esta%20propiedad%20(ID:%20{{inmueble?.id}}).%20%C2%BFPuedes%20darme%20m%C3%A1s%20informaci%C3%B3n%3F"
+                target="_blank" rel="noopener">
+                Enviar WhatsApp
+              </a>
+            </div>
+          </form>
+          <p class="text-muted small mt-3 mb-0">
+            * Al enviar, te contactaremos por email o teléfono. Presiona WhatsApp y contactanos ahora mismo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>

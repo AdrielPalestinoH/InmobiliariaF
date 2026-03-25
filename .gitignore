@@ -1,0 +1,54 @@
+# -----------------------------
+# Angular / build output
+# -----------------------------
+dist/
+out-tsc/
+.tmp/
+.angular/
+.cache/
+coverage/
+
+# -----------------------------
+# Dependencies
+# -----------------------------
+node_modules/
+
+# -----------------------------
+# Logs & debug
+# -----------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -----------------------------
+# OS / Editor / tooling
+# -----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.history/
+*.swp
+*.swo
+
+# -----------------------------
+# TypeScript / tooling caches
+# -----------------------------
+*.tsbuildinfo
+.eslintcache
+
+# -----------------------------
+# Environment files
+# -----------------------------
+.env
+.env.*
+
+# -----------------------------
+# Compiled CSS output (generated from SCSS)
+# If you generate CSS into /css, ignore the compiled files and sourcemaps.
+# If you AUTHOR these CSS files manually, remove these rules.
+# -----------------------------
+css/*.css
+css/*.css.map

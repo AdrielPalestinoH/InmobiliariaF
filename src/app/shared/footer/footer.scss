@@ -1,0 +1,60 @@
+@use 'mixins' as m;
+
+.footer {
+  @include m.bg-cover('/assets/footer.jpg');
+  @include m.overlay(#000, 0.5);
+
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  padding: 40px 0;
+
+  .container { @include m.content-over(1); }
+  hr { @include m.light-hr(0.4); }
+  input.form-control { @include m.glass-input(0.8); }
+}
+
+footer {
+  .footer-social {
+    padding-right: 0.25rem; 
+  }
+
+  .footer-social__link {
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    line-height: 0;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+
+    &:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.7);
+      outline-offset: 3px;
+      border-radius: 999px;
+    }
+  }
+
+  // Mobile-first: si no cabe, baja los íconos debajo del texto centrado
+  @media (max-width: 480px) {
+    .footer-bottom {
+      padding-right: 0; // evita que “empuje” en pantallas chicas
+    }
+
+    .footer-social {
+      position: static !important;
+      margin: 0.75rem auto 0;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}

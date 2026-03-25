@@ -1,0 +1,21 @@
+.property-card__btn {
+  border-color: var(--brand, #2f3f9e);
+  color: var(--brand, #2f3f9e);
+  border-color: var(--brand, #2f3f9e);
+  color: #fff;
+  border: none;
+
+  &:hover,
+  &:focus,
+  &:focus-visible,
+  &.active {
+    background-color: var(--brand, #2f3f9e);
+    border-color: var(--brand, #2f3f9e);
+    color: #fff;
+    opacity: 1;
+    background-image: none;
+    box-shadow: 0 0 0 0.2rem rgba(47, 63, 158, 0.25);
+    outline: 0;
+  }
+}
+

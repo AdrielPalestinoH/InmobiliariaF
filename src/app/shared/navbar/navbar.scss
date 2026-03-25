@@ -1,0 +1,26 @@
+@use 'mixins' as m;
+
+.block-header-logo {
+  --logo-w: 191px;
+  --logo-h: 70px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.block-header-logo__image {
+  width: var(--logo-w);
+  height: var(--logo-h);
+  object-fit: contain;
+  display: block;
+}
+
+.app-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #ffffff;
+  backdrop-filter: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
