@@ -16,7 +16,7 @@ export interface Usuario {
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private apiUrl = 'https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/usuarios';
+  private apiUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/usuarios/debug';
 
   constructor(private http: HttpClient) {}
 
