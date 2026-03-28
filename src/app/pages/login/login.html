@@ -32,9 +32,14 @@
 
         <div *ngIf="error" class="alert alert-danger p-2 text-center mb-3">{{ error }}</div>
 
-        <button type="submit" class="login__btn">
-          Enviar enlace mágico
-        </button>
+       <button type="submit" class="login__btn" [disabled]="loading">
+  <span *ngIf="!loading">Enviar enlace mágico</span>
+  <span *ngIf="loading">Enviando...</span>
+</button>
+
+<div *ngIf="mensajeExito" class="alert alert-success p-2 text-center mb-3">
+  {{ mensajeExito }}
+</div>
       </form>
 
       <p class="login-footnote text-muted small mt-3 mb-0">

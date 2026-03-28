@@ -20,6 +20,7 @@ import { MisPagos } from "./pages/mispagos/mispagos";
 
 import { AdminGuard } from "./core/guards/admin";
 import { ClienteGuard } from "./core/guards/cliente";
+import { VerificarTokenComponent } from "./pages/verificar-token/verificar-token";
 
 export const routes: Routes = [
   { path: "", component: Landing },
@@ -27,6 +28,10 @@ export const routes: Routes = [
   { path: "register", component: Register },
   { path: "propiedades", component: Propiedades },
   { path: "detalle-propiedad/:id", component: DetallePropiedad },
+  {
+  path: "verificar",
+  component: VerificarTokenComponent,
+},
 
   //Cliente (tipo 2)
   { path: "mispagos", component: MisPagos, canActivate: [ClienteGuard] },
@@ -35,7 +40,7 @@ export const routes: Routes = [
   {
     path: "",
     component: MainLayout,
-    canActivate: [AdminGuard],
+   // canActivate: [AdminGuard],
     children: [
       { path: "dashboard", component: Dashboard },
       { path: "clientes", component: Clientes },

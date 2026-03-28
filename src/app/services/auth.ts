@@ -8,15 +8,19 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, pwd: string): Observable<any> {
-    return this.http.post(this.apiUrl, { email, pwd }).pipe(
-      tap((user: any) => {
-        // Guardamos el usuario en localStorage
-        localStorage.setItem('usuario', JSON.stringify(user));
-      })
-    );
-  }
+  verificarToken(token: string) {
+  return this.http.get<any>(
+    `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/auth/verificar?token=${token}`
+  );
+}
 
+
+  login(email: string, pwd: string): Observable<any> {
+  return this.http.post(this.apiUrl, { 
+    email: email,
+    token: ""  // importante
+  })
+}
   logout() {
     localStorage.removeItem('usuario');
   }
