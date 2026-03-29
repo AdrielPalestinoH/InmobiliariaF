@@ -27,9 +27,7 @@ export interface Inmueble {
 
 @Injectable({ providedIn: "root" })
 export class InmuebleService {
-  private apiUrl =
-    "https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/inmuebles";
-
+  private apiUrl = "https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles";
   constructor(private http: HttpClient) {}
 
   listarInmuebles(): Observable<Inmueble[]> {
