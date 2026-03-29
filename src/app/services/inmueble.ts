@@ -50,4 +50,9 @@ export class InmuebleService {
   enviarContacto(inmuebleId: number, data: any) {
     return this.http.post(`${this.apiUrl}/${inmuebleId}/contacto`, data);
   }
+
+  // En inmueble.ts
+  actualizar(id: number, inmueble: Inmueble): Observable<Inmueble> {
+    return this.http.put<Inmueble>(`${this.apiUrl}/${id}`, inmueble);
+  }
 }

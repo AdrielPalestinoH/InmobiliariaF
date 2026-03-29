@@ -97,7 +97,7 @@ export class Productos implements OnInit {
         this.mostrarFormulario = false;
         this.cargarInmuebles();
       },
-      error: (err) => console.error('Error al guardar inmueble', err)
+      error: (err: any) => console.error('Error al guardar inmueble', err)
     });
   }
 }
