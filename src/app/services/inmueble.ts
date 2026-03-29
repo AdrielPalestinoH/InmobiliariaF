@@ -27,31 +27,27 @@ export interface Inmueble {
 
 @Injectable({ providedIn: "root" })
 export class InmuebleService {
+  // 1. La URL base correcta
   private apiUrl = "https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles";
+
   constructor(private http: HttpClient) {}
 
   listarInmuebles(): Observable<Inmueble[]> {
     return this.http.get<Inmueble[]>(this.apiUrl);
   }
 
+  // 2. Usar 'this.apiUrl' + '/registro' (según tu InmuebleController)
   crearInmueble(inmueble: Inmueble): Observable<Inmueble> {
-    return this.http.post<Inmueble>(this.apiUrl, inmueble);
+    return this.http.post<Inmueble>(`${this.apiUrl}/registro`, inmueble);
   }
 
-  actualizar(id: number, inmueble: Inmueble): Observable<Inmueble> {
-    return this.http.put<Inmueble>(`${this.apiUrl}/${id}`, inmueble);
-  }
-
+  // 3. Corregido: Ya no usamos el dominio 'inmoapi-adagc9dgfjgnfuar'
   obtenerInmueble(id: number) {
-    return this.http.get<Inmueble>(
-      `https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/inmuebles/${id}`,
-    );
+    return this.http.get<Inmueble>(`${this.apiUrl}/${id}`);
   }
 
+  // 4. Corregido: Unificado a la API real
   enviarContacto(inmuebleId: number, data: any) {
-    return this.http.post(
-      `https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/inmuebles/${inmuebleId}/contacto`,
-      data,
-    );
+    return this.http.post(`${this.apiUrl}/${inmuebleId}/contacto`, data);
   }
 }
