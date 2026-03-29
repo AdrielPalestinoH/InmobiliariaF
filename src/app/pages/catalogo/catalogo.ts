@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe, NgFor } from '@angular/common';
+import { CurrencyPipe } from '@angular/common'; // Quitamos NgFor si usamos @for
+import { RouterModule } from '@angular/router'; // <--- IMPORTANTE: Agrega esto
 import { InmuebleService, Inmueble } from '../../services/inmueble';
 
 @Component({
   selector: 'app-catalogo',
   standalone: true,
-  imports: [NgFor, CurrencyPipe],
+  // Agregamos RouterModule para que reconozca [routerLink]
+  imports: [CurrencyPipe, RouterModule], 
   templateUrl: './catalogo.html',
   styleUrls: ['./catalogo.scss']
 })
