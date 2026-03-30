@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
 import { UsuarioService, Usuario } from '../../services/usuario';
+import { NgFor, NgIf, NgClass } from '@angular/common'; // <--- AGREGA NgClass AQUÍ
+import { RouterModule } from '@angular/router'; // Asegúrate de tenerlo para otros links
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf],
+  imports: [FormsModule, NgFor, NgIf, NgClass, RouterModule],
   templateUrl: './clientes.html',
   styleUrls: ['./clientes.scss']
 })
