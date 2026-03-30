@@ -84,6 +84,8 @@ export class Clientes implements OnInit {
 
 
  guardarCliente() {
+  // Aseguramos que sea un cliente (ID 2 según tu DB)
+  this.clienteActual.tipoUsuarioId = 2;
   // 1. Corregimos la validación: Usamos clienteActual que es el que está en el [(ngModel)]
   if (!this.clienteActual.nombre || !this.clienteActual.email) {
     alert('Por favor llena los campos obligatorios.');
