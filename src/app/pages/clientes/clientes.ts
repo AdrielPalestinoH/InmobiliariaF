@@ -83,34 +83,27 @@ export class Clientes implements OnInit {
   }
 
 
- guardarCliente() {
-  // Aseguramos que sea un cliente (ID 2 según tu DB)
-  this.clienteActual.tipoUsuarioId = 2;
-  // 1. Corregimos la validación: Usamos clienteActual que es el que está en el [(ngModel)]
-  if (!this.clienteActual.nombre || !this.clienteActual.email) {
-    alert('Por favor llena los campos obligatorios.');
-    return;
-  }
+guardarCliente() {
+  const usuarioParaEnviar = {
+    // Usamos los nombres que tu DTO/Entity esperan (basado en tus logs previos)
+    nombres: this.clienteActual.nombre,
+    apellidos: this.clienteActual.apellidos,
+    email: this.clienteActual.email,
+    telefono: this.clienteActual.cel,
+    // ESTO ES LO QUE ESTABA FALTANDO/FALLANDO:
+    role: 'CLIENTE' 
+  };
 
-  if (this.modoEdicion) {
-    // Lógica para ACTUALIZAR
-    this.usuarioService.actualizar(this.clienteActual.id!, this.clienteActual).subscribe({
-      next: () => {
-        alert('Cliente actualizado ✅');
-        this.finalizarGuardado();
-      },
-      error: (err) => console.error('Error al actualizar', err)
-    });
-  } else {
-    // Lógica para CREAR (Llamará a /registro)
-    this.usuarioService.crear(this.clienteActual).subscribe({
-      next: () => {
-        alert('Cliente registrado con éxito ✅');
-        this.finalizarGuardado();
-      },
-      error: (err) => console.error('Error al registrar', err)
-    });
-  }
+  this.usuarioService.crear(usuarioParaEnviar).subscribe({
+    next: () => {
+      alert('Cliente registrado. Se envió correo de activación ✅');
+      this.finalizarGuardado();
+    },
+    error: (err) => {
+      console.error('Error al guardar', err);
+      alert('Error en el servidor. Revisa si el campo "role" llega al DTO.');
+    }
+  });
 }
 
 // Función auxiliar para limpiar
