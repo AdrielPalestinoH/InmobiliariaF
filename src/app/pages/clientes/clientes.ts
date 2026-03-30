@@ -82,26 +82,37 @@ export class Clientes implements OnInit {
   }
 
 
-  guardarCliente() {
-    if (!this.nuevoCliente.nombre || !this.nuevoCliente.email) {
-      alert('Por favor llena los campos obligatorios.');
-      return;
-    }
+ guardarCliente() {
+  // 1. Corregimos la validación: Usamos clienteActual que es el que está en el [(ngModel)]
+  if (!this.clienteActual.nombre || !this.clienteActual.email) {
+    alert('Por favor llena los campos obligatorios.');
+    return;
+  }
 
-    this.usuarioService.crear(this.nuevoCliente).subscribe({
+  if (this.modoEdicion) {
+    // Lógica para ACTUALIZAR
+    this.usuarioService.actualizar(this.clienteActual.id!, this.clienteActual).subscribe({
       next: () => {
-        alert('Cliente creado con éxito ✅');
-        this.mostrarFormulario = false;
-        this.cargarClientes();
-        this.nuevoCliente = {
-          nombre: '',
-          apellidos: '',
-          email: '',
-          cel: '',
-          tipoUsuarioDescripcion: 'Cliente'
-        };
+        alert('Cliente actualizado ✅');
+        this.finalizarGuardado();
       },
-      error: (err) => console.error('Error al crear cliente', err)
+      error: (err) => console.error('Error al actualizar', err)
+    });
+  } else {
+    // Lógica para CREAR (Llamará a /registro)
+    this.usuarioService.crear(this.clienteActual).subscribe({
+      next: () => {
+        alert('Cliente registrado con éxito ✅');
+        this.finalizarGuardado();
+      },
+      error: (err) => console.error('Error al registrar', err)
     });
   }
+}
+
+// Función auxiliar para limpiar
+finalizarGuardado() {
+  this.mostrarFormulario = false;
+  this.cargarClientes();
+}
 }
