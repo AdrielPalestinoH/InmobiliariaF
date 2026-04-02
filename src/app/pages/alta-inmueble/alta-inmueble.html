@@ -40,7 +40,7 @@
 <select class="form-select" [(ngModel)]="inmueble.id_tipo_inmueble" name="id_tipo_inmueble" required>
   <option [value]="0">Seleccione...</option>
   <option *ngFor="let t of tipos" [value]="t.id">
-    {{ t.inmuebleTipo }}
+{{ t | json }}
   </option>
 </select>
         </div>
