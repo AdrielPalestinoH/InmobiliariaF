@@ -14,6 +14,7 @@ export interface Inmueble {
   fraccion: string;
   terrenoM2: number;
   disponibilidad: string;
+  id_tipo_inmueble?: number; // Añade este para que coincida con el formulario
   idTipoInmueble: number;
   
   // Campos para compatibilidad con componentes viejos (Catalogo/Productos)

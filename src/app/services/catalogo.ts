@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface EstadoInmueble {
-  id: number;
-  descripcion: string;
+export interface TipoInmueble {
+  id_tipo_inmueble: number;
+  inmueble_tipo: string;
 }
 
-export interface TipoInmueble {
+export interface EstadoInmueble {
   id: number;
   descripcion: string;
 }
