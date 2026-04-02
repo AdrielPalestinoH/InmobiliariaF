@@ -70,6 +70,7 @@ onFileSelected(event: any) {
       next: (data) => {
         console.log('Tipos cargados:', data);
         this.tipos = data;
+        console.log("tipos: ",this.tipos)
       },
       error: (err) => console.error('Error al cargar tipos', err)
     });
