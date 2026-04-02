@@ -31,9 +31,14 @@
         </div>
         <div class="col-md-4 mb-3">
           <label>Tipo de Inmueble</label>
-<select class="form-select" [(ngModel)]="inmuebleActual.id_tipo_inmueble" name="id_tipo_inmueble" required>  <option *ngFor="let t of tipos" [value]="t.id_tipo_inmueble">
-    {{ t.inmueble_tipo }}
-  </option>
+<select class="form-select" [(ngModel)]="inmueble.id_tipo_inmueble" name="id_tipo_inmueble" required>
+  <option value="0" disabled>Seleccione una opción...</option>
+  <option [value]="1">CASA</option>
+  <option [value]="2">DEPARTAMENTO</option>
+  <option [value]="3">TERRENO</option>
+  <option [value]="4">LOCAL COMERCIAL</option>
+  <option [value]="5">BODEGA</option>
+</select>
 </select>
         </div>
 
