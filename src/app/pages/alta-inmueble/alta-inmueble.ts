@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Catalogo, EstadoInmueble, TipoInmueble } from '../../services/catalogo';
 import { InmuebleService } from '../../services/inmueble';
-import { NgFor } from '@angular/common';  // 👈 Importar esto
+import { NgFor ,NgIf} from '@angular/common';  // 👈 Importar esto
 
 @Component({
   selector: 'app-alta-inmueble',
   standalone: true,
-  imports: [FormsModule,NgFor],
+  imports: [FormsModule,NgFor,NgIf],
   templateUrl: './alta-inmueble.html',
   styleUrls: ['./alta-inmueble.scss']
 })
@@ -49,7 +49,7 @@ onFileSelected(event: any) {
     fraccion: '',          // 👈 Agregados
     terrenoM2: 0,          // 👈 Agregados
     disponibilidad: 'DISPONIBLE',
-    idTipoInmueble: 0      // Asegúrate que coincida con el nombre en la interfaz
+    id_tipo_inmueble: 0      // Asegúrate que coincida con el nombre en la interfaz
   };
 
   constructor(
@@ -77,7 +77,7 @@ onFileSelected(event: any) {
 
   guardar() {
     // Verificamos que el idTipoInmueble tenga un valor válido antes de enviar
-    if (this.inmueble.idTipoInmueble === 0) {
+    if (this.inmueble.id_tipo_inmueble === 0) {
       alert('Por favor selecciona un tipo de inmueble');
       return;
     }

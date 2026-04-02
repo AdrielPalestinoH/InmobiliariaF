@@ -23,6 +23,7 @@ export interface Inmueble {
   descripcion?: string; 
   tipoDescripcion?: string;
   estadoDescripcion?: string;
+  [key: string]: any; // 👈 Esto le dice a TypeScript: "Acepta cualquier otra propiedad extra"
 }
 
 @Injectable({ providedIn: "root" })

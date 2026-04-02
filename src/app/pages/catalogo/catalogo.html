@@ -3,9 +3,7 @@
     <div class="col-md-4 mb-4">
       <div class="card h-100 border-0 shadow-sm hover-shadow">
         <div class="position-relative">
-          <img [src]="inmueble.imagen || 'https://picsum.photos/400/200?random=' + inmueble.id" 
-               class="card-img-top custom-card-img" 
-               alt="Imagen de {{ inmueble.titulo }}">
+  <img [src]="(inmueble.imagenes && inmueble.imagenes.length > 0 ? inmueble.imagenes[0].urlImagen : 'https://picsum.photos/400/300')" ...>
           <span class="badge bg-primary position-absolute top-0 end-0 m-2">
             {{ inmueble.tipoDescripcion }}
           </span>
