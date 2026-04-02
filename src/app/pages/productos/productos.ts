@@ -51,14 +51,18 @@ export class Productos implements OnInit {
     this.cargarCatalogos();
   }
 
-  cargarCatalogos() {
-    // Nota el "/api/v1/inmuebles/tipos"
-    this.http.get<any[]>('https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles/tipos').subscribe({
-      next: data => (this.tipos = data),
-      error: err => console.error('Error al cargar tipos', err)
-    });
-  }
-
+cargarCatalogos() {
+  // CAMBIA la URL vieja por esta nueva:
+  const urlNueva = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles/tipos';
+  
+  this.http.get<any[]>(urlNueva).subscribe({
+    next: data => {
+      console.log('Datos recibidos de la API:', data); // Revisa esto en la consola F12
+      this.tipos = data;
+    },
+    error: err => console.error('Error al cargar tipos', err)
+  });
+}
   cargarInmuebles() {
     this.inmuebleService.listarInmuebles().subscribe({
       next: (data) => (this.inmuebles = data),
