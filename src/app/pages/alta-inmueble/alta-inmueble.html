@@ -37,9 +37,11 @@
 
         <div class="col-md-6 mb-3">
           <label class="form-label">Tipo de Inmueble</label>
-<select class="form-select" [(ngModel)]="inmueble.id_tipo_inmueble" name="id_tipo_inmueble" required>
-  <option value="0">Seleccione tipo...</option>
-  <option *ngFor="let t of tipos" [value]="t.id_tipo_inmueble">{{ t.inmueble_tipo }}</option>
+<select class="form-select" [(ngModel)]="inmueble.id_tipo_inmueble" name="id_tipo_inmueble">
+  <option value="0">Seleccione...</option>
+  <option *ngFor="let t of tipos" [value]="t.id_tipo_inmueble">
+    {{ t.inmueble_tipo }}
+  </option>
 </select>
         </div>
 
