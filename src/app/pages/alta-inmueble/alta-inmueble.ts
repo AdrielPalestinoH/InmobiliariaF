@@ -15,11 +15,41 @@ export class AltaInmueble implements OnInit {
   estados: EstadoInmueble[] = [];
   tipos: TipoInmueble[] = [];
 
+
+  selectedFiles: File[] = [];
+fotosPreview: string[] = [];
+
+onFileSelected(event: any) {
+  const files = Array.from(event.target.files) as File[];
+  
+  if (files.length > 4) {
+    alert("Solo puedes subir un máximo de 4 fotos.");
+    event.target.value = ''; // Limpiar input
+    return;
+  }
+
+  this.selectedFiles = files;
+  
+  // Crear previsualizaciones
+  this.fotosPreview = [];
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
+    reader.readAsDataURL(file);
+  });
+}
+
   inmueble = {
-    descripcion: '',
+    titulo: '',
     precio: 0,
-    estadoId: 0,
-    tipoId: 0
+    nispc: '',             // 👈 Agregados
+    claveCatastral: '',     // 👈 Agregados
+    manzana: '',           // 👈 Agregados
+    lote: '',              // 👈 Agregados
+    fraccion: '',          // 👈 Agregados
+    terrenoM2: 0,          // 👈 Agregados
+    disponibilidad: 'DISPONIBLE',
+    idTipoInmueble: 0      // Asegúrate que coincida con el nombre en la interfaz
   };
 
   constructor(
@@ -46,12 +76,22 @@ export class AltaInmueble implements OnInit {
   }
 
   guardar() {
-    this.inmuebleService.crearInmueble(
-      { descripcion: this.inmueble.descripcion, precio: this.inmueble.precio },
-   
-    ).subscribe({
-      next: () => alert('Inmueble creado con éxito'),
-      error: (err) => console.error('Error al crear inmueble', err)
+    // Verificamos que el idTipoInmueble tenga un valor válido antes de enviar
+    if (this.inmueble.idTipoInmueble === 0) {
+      alert('Por favor selecciona un tipo de inmueble');
+      return;
+    }
+
+    // Enviamos el objeto completo (se castea como 'any' o 'Inmueble' si es necesario)
+    this.inmuebleService.crearInmueble(this.inmueble as any).subscribe({
+      next: () => {
+        alert('Inmueble creado con éxito ✅');
+        // Opcional: resetear el formulario aquí
+      },
+      error: (err) => {
+        console.error('Error al crear inmueble', err);
+        alert('Error al guardar: ' + (err.error?.message || 'Error de conexión'));
+      }
     });
   }
 }

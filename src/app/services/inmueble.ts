@@ -5,20 +5,24 @@ import { Observable } from "rxjs";
 // En inmueble.ts
 export interface Inmueble {
   id?: number;
-  nispc: string;            // Requerido por tu DTO
-  titulo: string;           // Antes era 'descripcion'
+  nispc: string;
+  titulo: string;
   precio: number;
-  claveCatastral: string;   // Requerido por tu SELECT
+  claveCatastral: string;
   manzana: string;
   lote: string;
   fraccion: string;
   terrenoM2: number;
-  disponibilidad: string;   // 'disponibilidad_inmueble' en BD
-  idTipoInmueble: number;   // Para el SELECT de tipos
+  disponibilidad: string;
+  idTipoInmueble: number;
   
-  // Estos se llenarán después con el Blob Storage
-  imagenes?: any[]; 
-  direccion?: any; 
+  // Campos para compatibilidad con componentes viejos (Catalogo/Productos)
+  imagenes?: any[];
+  fechaAlta?: string; // Evita el error en productos.html
+  // Agregamos estos como opcionales para que el build no truene
+  descripcion?: string; 
+  tipoDescripcion?: string;
+  estadoDescripcion?: string;
 }
 
 @Injectable({ providedIn: "root" })

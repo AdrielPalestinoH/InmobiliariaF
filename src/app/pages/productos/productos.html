@@ -88,14 +88,10 @@
         </tr>
       </thead>
       <tbody class="text-center">
-        <tr *ngFor="let i of buscar(); let idx = index">
+       <tr *ngFor="let i of buscar(); let idx = index">
           <td>{{ idx + 1 }}</td>
-          <td>{{ i.descripcion ?? '-' }}</td>
-          <td>{{ i.tipoDescripcion ?? '-' }}</td>
-          <td>{{ i.estadoDescripcion ?? '-' }}</td>
-          <td>{{ i.precio | currency:'USD' }}</td>
-          <td>{{ i.fechaAlta | date:'short' }}</td>
-          <td>
+          <td>{{ i.titulo ?? '-' }}</td> <td>{{ i.idTipoInmueble ?? '-' }}</td> <td>{{ i.disponibilidad ?? '-' }}</td> <td>{{ i.precio | currency:'USD' }}</td>
+          <td>{{ i.nispc }}</td> <td>
             <button class="btn btn-sm btn-outline-primary" (click)="editarInmueble(i)">
               <i class="bi bi-pencil"></i> Editar
             </button>

@@ -1,34 +1,68 @@
-<p>alta-inmueble works!</p>
-<div class="container mt-4">
-  <h2>Alta de Inmueble</h2>
+<div class="container mt-4 mb-5">
+  <div class="card shadow p-4">
+    <h2 class="text-primary mb-4"><i class="bi bi-house-add"></i> Alta de Inmueble</h2>
 
-  <form (ngSubmit)="guardar()" #f="ngForm">
-    <div class="mb-3">
-      <label>Descripción</label>
-      <input type="text" class="form-control" [(ngModel)]="inmueble.descripcion" name="descripcion" required>
-    </div>
+    <form (ngSubmit)="guardar()" #f="ngForm">
+      <div class="row">
+        <div class="col-md-8 mb-3">
+          <label class="form-label">Título del Inmueble</label>
+          <input type="text" class="form-control" [(ngModel)]="inmueble.titulo" name="titulo" required placeholder="Ej: Residencia en Bosques">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Precio (USD)</label>
+          <input type="number" class="form-control" [(ngModel)]="inmueble.precio" name="precio" required>
+        </div>
 
-    <div class="mb-3">
-      <label>Precio</label>
-      <input type="number" class="form-control" [(ngModel)]="inmueble.precio" name="precio" required>
-    </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">NISPC</label>
+          <input type="text" class="form-control" [(ngModel)]="inmueble.nispc" name="nispc" required placeholder="Código NISPC">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Clave Catastral</label>
+          <input type="text" class="form-control" [(ngModel)]="inmueble.claveCatastral" name="claveCatastral" required>
+        </div>
 
-    <div class="mb-3">
-      <label>Estado</label>
-      <select class="form-select" [(ngModel)]="inmueble.estadoId" name="estadoId" required>
-        <option value="">Seleccione...</option>
-        <option *ngFor="let e of estados" [value]="e.id">{{ e.descripcion }}</option>
-    </select>
-    </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Manzana</label>
+          <input type="text" class="form-control" [(ngModel)]="inmueble.manzana" name="manzana">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Lote</label>
+          <input type="text" class="form-control" [(ngModel)]="inmueble.lote" name="lote">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Terreno M2</label>
+          <input type="number" class="form-control" [(ngModel)]="inmueble.terrenoM2" name="terrenoM2">
+        </div>
 
-    <div class="mb-3">
-      <label>Tipo</label>
-      <select class="form-select" [(ngModel)]="inmueble.tipoId" name="tipoId" required>
-        <option value="">Seleccione...</option>
-        <option *ngFor="let t of tipos" [value]="t.id">{{ t.descripcion }}</option>
-      </select>
-    </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Tipo de Inmueble</label>
+          <select class="form-select" [(ngModel)]="inmueble.idTipoInmueble" name="idTipoInmueble" required>
+            <option value="0">Seleccione tipo...</option>
+            <option *ngFor="let t of tipos" [value]="t.id_tipo_inmueble">{{ t.inmueble_tipo }}</option>
+          </select>
+        </div>
 
-    <button class="btn btn-success" type="submit" [disabled]="f.invalid">Guardar</button>
-  </form>
+        <div class="col-12 mb-4">
+          <hr>
+          <label class="form-label d-block"><strong>Galería de Imágenes (Mínimo 1, Máximo 4)</strong></label>
+          <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" multiple>
+          <small class="text-muted">La primera imagen seleccionada será la principal.</small>
+          
+          <div class="d-flex gap-2 mt-2" *ngIf="fotosPreview.length > 0">
+            <div *ngFor="let img of fotosPreview" class="position-relative">
+              <img [src]="img" style="width: 80px; height: 80px; object-fit: cover;" class="border rounded">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-secondary me-md-2" type="button" (click)="f.reset()">Limpiar</button>
+        <button class="btn btn-success px-5" type="submit" [disabled]="f.invalid || selectedFiles.length === 0">
+          <i class="bi bi-cloud-arrow-up"></i> Guardar y Subir
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
