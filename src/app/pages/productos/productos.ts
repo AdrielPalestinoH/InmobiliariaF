@@ -67,6 +67,15 @@ export class Productos implements OnInit {
   }
 
 
+  buscar() {
+  const texto = this.filtro.toLowerCase();
+  return this.inmuebles.filter(i => 
+    (i.titulo?.toLowerCase().includes(texto)) || 
+    (i.nispc?.toLowerCase().includes(texto))
+  );
+}
+
+
 
 nuevoInmueble() {
   this.mostrarFormulario = true;
