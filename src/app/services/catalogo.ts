@@ -16,7 +16,7 @@ export interface EstadoInmueble {
   providedIn: 'root'
 })
 export class Catalogo {
-  private apiUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles/tipos';
+  private apiUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles';
 
   constructor(private http: HttpClient) {}
 
