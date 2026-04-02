@@ -12,17 +12,30 @@ import { InmuebleService, Inmueble } from '../../services/inmueble';
   styleUrls: ['./productos.scss']
 })
 export class Productos implements OnInit {
+  inmuebleActual: Inmueble = this.initInmueble();
   inmuebles: Inmueble[] = [];
   filtro = '';
   mostrarFormulario = false;
   modoEdicion = false;
 
-  inmuebleActual: Inmueble = {
-    descripcion: '',
+  
+
+  private initInmueble(): Inmueble {
+  return {
+    titulo: '',
     precio: 0,
-    tipoDescripcion: '',
-    estadoDescripcion: ''
+    nispc: '',
+    claveCatastral: '',
+    manzana: '',
+    lote: '',
+    fraccion: '',
+    terrenoM2: 0,
+    disponibilidad: 'DISPONIBLE',
+    idTipoInmueble: 1
   };
+}
+
+  
 
   tipos: any[] = [];
   estados: any[] = [];
@@ -39,14 +52,10 @@ export class Productos implements OnInit {
   }
 
   cargarCatalogos() {
-    this.http.get<any[]>('https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/tipos-inmueble').subscribe({
+    // Nota el "/api/v1/inmuebles/tipos"
+    this.http.get<any[]>('https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/inmuebles/tipos').subscribe({
       next: data => (this.tipos = data),
       error: err => console.error('Error al cargar tipos', err)
-    });
-
-    this.http.get<any[]>('https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/estados-inmueble').subscribe({
-      next: data => (this.estados = data),
-      error: err => console.error('Error al cargar estados', err)
     });
   }
 
@@ -57,28 +66,13 @@ export class Productos implements OnInit {
     });
   }
 
-  buscar() {
-    const texto = this.filtro.toLowerCase();
-    return this.inmuebles.filter(i => {
-      const descripcion = i.descripcion ?? '';
-      const tipo = i.tipoDescripcion ?? '';
-      return (
-        descripcion.toLowerCase().includes(texto) ||
-        tipo.toLowerCase().includes(texto)
-      );
-    });
-  }
 
-  nuevoInmueble() {
-    this.mostrarFormulario = true;
-    this.modoEdicion = false;
-    this.inmuebleActual = {
-      descripcion: '',
-      precio: 0,
-      tipoDescripcion: '',
-      estadoDescripcion: ''
-    };
-  }
+
+nuevoInmueble() {
+  this.mostrarFormulario = true;
+  this.modoEdicion = false;
+  this.inmuebleActual = this.initInmueble();
+}
 
   editarInmueble(i: Inmueble) {
     this.mostrarFormulario = true;

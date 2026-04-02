@@ -2,27 +2,23 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
+// En inmueble.ts
 export interface Inmueble {
   id?: number;
-  titulo?: string;
-  precio?: number;
-  ubicacion?: string;
-  tipo?: string;
-  recamaras?: number;
-  banos?: number;
-  metros2?: number;
-  estacionamientos?: number;
-  imagen?: string;
-  descripcion?: string;
-  estatus?: string;
-  destacada?: boolean;
-
-  fechaAlta?: string;
-  estadoDescripcion?: string;
-  tipoDescripcion?: string;
-
-  tipoId?: number;
-  estadoId?: number;
+  nispc: string;            // Requerido por tu DTO
+  titulo: string;           // Antes era 'descripcion'
+  precio: number;
+  claveCatastral: string;   // Requerido por tu SELECT
+  manzana: string;
+  lote: string;
+  fraccion: string;
+  terrenoM2: number;
+  disponibilidad: string;   // 'disponibilidad_inmueble' en BD
+  idTipoInmueble: number;   // Para el SELECT de tipos
+  
+  // Estos se llenarán después con el Blob Storage
+  imagenes?: any[]; 
+  direccion?: any; 
 }
 
 @Injectable({ providedIn: "root" })

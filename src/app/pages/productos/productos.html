@@ -1,6 +1,6 @@
 <div class="productos-page p-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3><i class="bi bi-box"></i> Productos (Inmuebles)</h3>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3><i class="bi bi-house"></i> Gestión de Inmuebles</h3>
     <button class="btn btn-primary" (click)="nuevoInmueble()">
       {{ mostrarFormulario ? 'Cerrar' : 'Agregar Inmueble' }}
     </button>
@@ -8,37 +8,57 @@
 
   <!-- Formulario -->
   <div *ngIf="mostrarFormulario" class="card p-4 mb-4 shadow-sm">
-    <h5>{{ modoEdicion ? 'Editar Inmueble' : 'Nuevo Inmueble' }}</h5>
+    <h5>{{ modoEdicion ? 'Editar Inmueble' : 'Registro de Nuevo Inmueble' }}</h5>
 
     <form (ngSubmit)="guardarInmueble()" #f="ngForm">
       <div class="row">
-        <div class="col-md-6 mb-3">
-          <label>Descripción</label>
-          <input class="form-control" [(ngModel)]="inmuebleActual.descripcion" name="descripcion" required />
+        <div class="col-md-8 mb-3">
+          <label>Título del Inmueble</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.titulo" name="titulo" required placeholder="Ej: Casa en Condominio" />
         </div>
-        <div class="col-md-6 mb-3">
-          <label>Precio (USD)</label>
+        <div class="col-md-4 mb-3">
+          <label>Precio</label>
           <input type="number" class="form-control" [(ngModel)]="inmuebleActual.precio" name="precio" required />
         </div>
-      <div class="col-md-6 mb-3">
-    <label>Tipo de Inmueble</label>
-    <select class="form-select" [(ngModel)]="inmuebleActual.tipoId" name="tipoId" required>
-        <option *ngFor="let t of tipos" [value]="t.id">{{ t.descripcion }}</option>
-    </select>
-    </div>
 
-    <div class="col-md-6 mb-3">
-    <label>Estado del Inmueble</label>
-    <select class="form-select" [(ngModel)]="inmuebleActual.estadoId" name="estadoId" required>
-        <option *ngFor="let e of estados" [value]="e.id">{{ e.descripcion }}</option>
-    </select>
-    </div>
+        <div class="col-md-4 mb-3">
+          <label>NISPC</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.nispc" name="nispc" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Clave Catastral</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.claveCatastral" name="claveCatastral" />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Tipo de Inmueble</label>
+          <select class="form-select" [(ngModel)]="inmuebleActual.idTipoInmueble" name="idTipoInmueble" required>
+            <option *ngFor="let t of tipos" [value]="t.id_tipo_inmueble">
+              {{ t.inmueble_tipo }}
+            </option>
+          </select>
+        </div>
 
+        <div class="col-md-3 mb-3">
+          <label>Manzana</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.manzana" name="manzana" />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label>Lote</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.lote" name="lote" />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label>Fracción</label>
+          <input class="form-control" [(ngModel)]="inmuebleActual.fraccion" name="fraccion" />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label>Terreno M2</label>
+          <input type="number" class="form-control" [(ngModel)]="inmuebleActual.terrenoM2" name="terrenoM2" />
+        </div>
       </div>
 
       <div class="d-flex justify-content-end gap-2 mt-3">
         <button class="btn btn-success" type="submit" [disabled]="f.invalid">
-          {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+          <i class="bi bi-save"></i> {{ modoEdicion ? 'Actualizar' : 'Guardar Inmueble' }}
         </button>
         <button type="button" class="btn btn-secondary" (click)="mostrarFormulario = false">Cancelar</button>
       </div>
