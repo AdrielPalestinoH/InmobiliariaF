@@ -49,7 +49,8 @@ onFileSelected(event: any) {
     fraccion: '',          // 👈 Agregados
     terrenoM2: 0,          // 👈 Agregados
     disponibilidad: 'DISPONIBLE',
-    id_tipo_inmueble: 0      // Asegúrate que coincida con el nombre en la interfaz
+    id_tipo_inmueble: 0 // Este recibirá el valor de t.id del select
+
   };
 
   constructor(

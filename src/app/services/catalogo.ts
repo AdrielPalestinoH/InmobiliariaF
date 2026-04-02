@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TipoInmueble {
-  id_tipo_inmueble: number;
-  inmueble_tipo: string;
+  id: number;           // Antes era id_tipo_inmueble
+  inmuebleTipo: string; // Antes era inmueble_tipo
 }
 
 export interface EstadoInmueble {
