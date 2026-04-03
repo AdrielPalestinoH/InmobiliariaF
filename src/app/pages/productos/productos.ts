@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';  // 👈 agrega esto
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf, CurrencyPipe, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf, CurrencyPipe, DatePipe, NgClass } from '@angular/common'; // Agregamos NgClassimport { FormsModule } from '@angular/forms';
 import { InmuebleService, Inmueble } from '../../services/inmueble';
-
+import { FormsModule } from '@angular/forms'; // 👈 Agrega esta línea
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, CurrencyPipe, DatePipe],
-  templateUrl: './productos.html',
+imports: [NgFor, NgIf, FormsModule, CurrencyPipe, DatePipe, NgClass], // 👈 Importante NgClass  templateUrl: './productos.html',
   styleUrls: ['./productos.scss']
 })
 export class Productos implements OnInit {
@@ -17,8 +15,52 @@ export class Productos implements OnInit {
   filtro = '';
   mostrarFormulario = false;
   modoEdicion = false;
-
+selectedFiles: File[] = [];
+  fotosPreview: string[] = [];
   
+  onFileSelected(event: any) {
+    const files = Array.from(event.target.files) as File[];
+    if (files.length > 4) {
+      alert("Solo puedes subir un máximo de 4 fotos.");
+      event.target.value = '';
+      return;
+    }
+    this.selectedFiles = files;
+    this.fotosPreview = [];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  guardarInmueble() {
+    // Si es edición, podrías decidir si mandas fotos o no. 
+    // Para la demo, enfoquémonos en el "Crear" (nuevo inmueble) con fotos.
+    const accion = this.modoEdicion
+      ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual)
+      : this.inmuebleService.crearInmueble(this.inmuebleActual, this.selectedFiles); // 👈 Pasamos selectedFiles
+
+    accion.subscribe({
+      next: () => {
+        alert(this.modoEdicion ? 'Actualizado ✅' : 'Creado con fotos en Azure ✅');
+        this.mostrarFormulario = false;
+        this.selectedFiles = []; // Limpiar fotos
+        this.fotosPreview = [];
+        this.cargarInmuebles();
+      },
+      error: (err: any) => alert('Error: ' + err.error)
+    });
+  }
+
+  // Al dar click en "Nuevo", reseteamos fotos
+  nuevoInmueble() {
+    this.mostrarFormulario = true;
+    this.modoEdicion = false;
+    this.selectedFiles = [];
+    this.fotosPreview = [];
+    this.inmuebleActual = this.initInmueble();
+  }
 
   private initInmueble(): Inmueble {
   return {
@@ -79,13 +121,7 @@ cargarCatalogos() {
   );
 }
 
-
-
-nuevoInmueble() {
-  this.mostrarFormulario = true;
-  this.modoEdicion = false;
-  this.inmuebleActual = this.initInmueble();
-}
+ 
 
   editarInmueble(i: Inmueble) {
     this.mostrarFormulario = true;
@@ -93,18 +129,5 @@ nuevoInmueble() {
     this.inmuebleActual = { ...i };
   }
 
-  guardarInmueble() {
-  const accion = this.modoEdicion
-    ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual)
-    : this.inmuebleService.crearInmueble(this.inmuebleActual, []); // 👈 Agrega el [] aquí
-
-  accion.subscribe({
-    next: () => {
-      alert(this.modoEdicion ? 'Inmueble actualizado ✅' : 'Inmueble creado ✅');
-      this.mostrarFormulario = false;
-      this.cargarInmuebles();
-    },
-    error: (err: any) => console.error('Error al guardar inmueble', err)
-  });
-}
+  
 }
