@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Catalogo, EstadoInmueble, TipoInmueble } from '../../services/catalogo';
 import { InmuebleService } from '../../services/inmueble';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf ,NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-alta-inmueble',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf],
+  imports: [FormsModule, NgFor, NgIf,NgClass],
   templateUrl: './alta-inmueble.html',
   styleUrls: ['./alta-inmueble.scss']
 })
@@ -36,6 +36,7 @@ export class AltaInmueble implements OnInit {
       lote: '',
       fraccion: '',
       terrenoM2: 0,
+      
       disponibilidad: 'DISPONIBLE',
       id_tipo_inmueble: 0 
     };
