@@ -6,7 +6,8 @@ import { FormsModule } from '@angular/forms'; // 👈 Agrega esta línea
 @Component({
   selector: 'app-productos',
   standalone: true,
-imports: [NgFor, NgIf, FormsModule, CurrencyPipe, DatePipe, NgClass], // 👈 Importante NgClass  templateUrl: './productos.html',
+  templateUrl: './productos.html',
+  imports: [NgFor, NgIf, FormsModule, CurrencyPipe, DatePipe, NgClass], // 👈 Importante NgClass  templateUrl: './productos.html',
   styleUrls: ['./productos.scss']
 })
 export class Productos implements OnInit {
