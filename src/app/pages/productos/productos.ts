@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';  // 👈 agrega esto
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'; // Agrega ViewChild y ElementRef
 import { NgFor, NgIf, CurrencyPipe, DatePipe, NgClass } from '@angular/common'; // Agregamos NgClassimport { FormsModule } from '@angular/forms';
 import { InmuebleService, Inmueble } from '../../services/inmueble';
 import { FormsModule } from '@angular/forms'; // 👈 Agrega esta línea
@@ -18,22 +18,36 @@ export class Productos implements OnInit {
   modoEdicion = false;
 selectedFiles: File[] = [];
   fotosPreview: string[] = [];
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
   
   onFileSelected(event: any) {
-    const files = Array.from(event.target.files) as File[];
-    if (files.length > 4) {
-      alert("Solo puedes subir un máximo de 4 fotos.");
-      event.target.value = '';
-      return;
-    }
-    this.selectedFiles = files;
-    this.fotosPreview = [];
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
-      reader.readAsDataURL(file);
-    });
+  const nuevosArchivos = Array.from(event.target.files) as File[];
+  
+  // Validar que el total no pase de 4
+  if (this.selectedFiles.length + nuevosArchivos.length > 4) {
+    alert("No puedes subir más de 4 fotos en total.");
+    event.target.value = ''; // Limpiar el input para que puedan reintentar
+    return;
   }
+
+  // Acumular los archivos y generar sus previews
+  nuevosArchivos.forEach(file => {
+    this.selectedFiles.push(file);
+    const reader = new FileReader();
+    reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
+    reader.readAsDataURL(file);
+  });
+
+  // Limpiar el input físico para permitir volver a seleccionar el mismo archivo si se desea
+  event.target.value = '';
+}
+
+// Agregar este método para que el usuario pueda corregir si se equivoca de foto
+quitarFoto(index: number) {
+  this.selectedFiles.splice(index, 1);
+  this.fotosPreview.splice(index, 1);
+}
 
   guardarInmueble() {
     // Si es edición, podrías decidir si mandas fotos o no. 
@@ -49,6 +63,10 @@ selectedFiles: File[] = [];
         this.selectedFiles = []; // Limpiar fotos
         this.fotosPreview = [];
         this.cargarInmuebles();
+
+        this.selectedFiles = [];
+this.fotosPreview = [];
+if (this.fileInput) this.fileInput.nativeElement.value = '';
       },
       error: (err: any) => alert('Error: ' + err.error)
     });
