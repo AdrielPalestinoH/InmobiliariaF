@@ -1,7 +1,6 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core"; 
 import { Observable } from "rxjs";
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 // En inmueble.ts
 export interface Inmueble {
   id?: number;
@@ -39,9 +38,25 @@ export class InmuebleService {
   }
 
   // 2. Usar 'this.apiUrl' + '/registro' (según tu InmuebleController)
-  crearInmueble(inmueble: Inmueble): Observable<Inmueble> {
-    return this.http.post<Inmueble>(`${this.apiUrl}/registro`, inmueble);
-  }
+  crearInmueble(inmueble: any, files: File[]): Observable<any> {
+  const formData = new FormData();
+
+  // 1. Agregamos el objeto inmueble como un Blob de tipo JSON
+  // El nombre 'inmueble' debe ser IGUAL al @RequestPart("inmueble") del Java
+  formData.append('inmueble', new Blob([JSON.stringify(inmueble)], {
+    type: 'application/json'
+  }));
+
+  // 2. Agregamos los archivos al mismo FormData
+  // El nombre 'files' debe ser IGUAL al @RequestPart("files") del Java
+  files.forEach((file) => {
+    formData.append('files', file);
+  });
+
+  // NOTA: No pongas Content-Type en los headers, 
+  // el navegador lo pondrá automáticamente como multipart/form-data
+  return this.http.post(`${this.apiUrl}/registro`, formData);
+}
 
   // 3. Corregido: Ya no usamos el dominio 'inmoapi-adagc9dgfjgnfuar'
   obtenerInmueble(id: number) {

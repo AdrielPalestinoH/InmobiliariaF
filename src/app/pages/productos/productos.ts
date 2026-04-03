@@ -94,17 +94,17 @@ nuevoInmueble() {
   }
 
   guardarInmueble() {
-    const accion = this.modoEdicion
-      ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual)
-      : this.inmuebleService.crearInmueble(this.inmuebleActual);
+  const accion = this.modoEdicion
+    ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual)
+    : this.inmuebleService.crearInmueble(this.inmuebleActual, []); // 👈 Agrega el [] aquí
 
-    accion.subscribe({
-      next: () => {
-        alert(this.modoEdicion ? 'Inmueble actualizado ✅' : 'Inmueble creado ✅');
-        this.mostrarFormulario = false;
-        this.cargarInmuebles();
-      },
-      error: (err: any) => console.error('Error al guardar inmueble', err)
-    });
-  }
+  accion.subscribe({
+    next: () => {
+      alert(this.modoEdicion ? 'Inmueble actualizado ✅' : 'Inmueble creado ✅');
+      this.mostrarFormulario = false;
+      this.cargarInmuebles();
+    },
+    error: (err: any) => console.error('Error al guardar inmueble', err)
+  });
+}
 }

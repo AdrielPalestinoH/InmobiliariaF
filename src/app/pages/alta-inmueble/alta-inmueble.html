@@ -30,6 +30,13 @@
           <label class="form-label">Lote</label>
           <input type="text" class="form-control" [(ngModel)]="inmueble.lote" name="lote">
         </div>
+
+        <div class="col-md-4 mb-3">
+  <label class="form-label">Fracción</label>
+  <input type="text" class="form-control" [(ngModel)]="inmueble.fraccion" name="fraccion">
+</div>
+
+
         <div class="col-md-4 mb-3">
           <label class="form-label">Terreno M2</label>
           <input type="number" class="form-control" [(ngModel)]="inmueble.terrenoM2" name="terrenoM2">
@@ -53,11 +60,18 @@
           <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" multiple>
           <small class="text-muted">La primera imagen seleccionada será la principal.</small>
           
-          <div class="d-flex gap-2 mt-2" *ngIf="fotosPreview.length > 0">
-            <div *ngFor="let img of fotosPreview" class="position-relative">
-              <img [src]="img" style="width: 80px; height: 80px; object-fit: cover;" class="border rounded">
-            </div>
-          </div>
+<div class="d-flex gap-3 mt-3" *ngIf="fotosPreview.length > 0">
+  <div *ngFor="let img of fotosPreview; let i = index" class="position-relative">
+    <img [src]="img" 
+         style="width: 100px; height: 100px; object-fit: cover;" 
+         class="border rounded shadow-sm">
+    
+    <span class="badge position-absolute top-0 start-0 m-1" 
+          [ngClass]="{'bg-primary': i === 0, 'bg-secondary': i > 0}">
+      {{ i === 0 ? 'Principal' : 'Detalle ' + i }}
+    </span>
+  </div>
+</div>
         </div>
       </div>
 

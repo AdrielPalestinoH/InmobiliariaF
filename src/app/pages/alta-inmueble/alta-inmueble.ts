@@ -2,97 +2,98 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Catalogo, EstadoInmueble, TipoInmueble } from '../../services/catalogo';
 import { InmuebleService } from '../../services/inmueble';
-import { NgFor ,NgIf} from '@angular/common';  // 👈 Importar esto
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-alta-inmueble',
   standalone: true,
-  imports: [FormsModule,NgFor,NgIf],
+  imports: [FormsModule, NgFor, NgIf],
   templateUrl: './alta-inmueble.html',
   styleUrls: ['./alta-inmueble.scss']
 })
 export class AltaInmueble implements OnInit {
   estados: EstadoInmueble[] = [];
   tipos: TipoInmueble[] = [];
-
-
   selectedFiles: File[] = [];
-fotosPreview: string[] = [];
+  fotosPreview: string[] = [];
 
-onFileSelected(event: any) {
-  const files = Array.from(event.target.files) as File[];
-  
-  if (files.length > 4) {
-    alert("Solo puedes subir un máximo de 4 fotos.");
-    event.target.value = ''; // Limpiar input
-    return;
-  }
-
-  this.selectedFiles = files;
-  
-  // Crear previsualizaciones
-  this.fotosPreview = [];
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
-    reader.readAsDataURL(file);
-  });
-}
-
-  inmueble = {
-    titulo: '',
-    precio: 0,
-    nispc: '',             // 👈 Agregados
-    claveCatastral: '',     // 👈 Agregados
-    manzana: '',           // 👈 Agregados
-    lote: '',              // 👈 Agregados
-    fraccion: '',          // 👈 Agregados
-    terrenoM2: 0,          // 👈 Agregados
-    disponibilidad: 'DISPONIBLE',
-    id_tipo_inmueble: 0 // Este recibirá el valor de t.id del select
-
-  };
+  // Inicializamos el objeto inmueble llamando al método nuevo
+  inmueble = this.initInmueble();
 
   constructor(
     private catalogoService: Catalogo,
     private inmuebleService: InmuebleService
   ) {}
 
+  // 1. EL MÉTODO QUE FALTABA: Define la estructura inicial/vacia
+  initInmueble() {
+    return {
+      titulo: '',
+      precio: 0,
+      nispc: '',
+      claveCatastral: '',
+      manzana: '',
+      lote: '',
+      fraccion: '',
+      terrenoM2: 0,
+      disponibilidad: 'DISPONIBLE',
+      id_tipo_inmueble: 0 
+    };
+  }
+
+  onFileSelected(event: any) {
+    const files = Array.from(event.target.files) as File[];
+    if (files.length > 4) {
+      alert("Solo puedes subir un máximo de 4 fotos.");
+      event.target.value = '';
+      return;
+    }
+    this.selectedFiles = files;
+    this.fotosPreview = [];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.fotosPreview.push(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
   ngOnInit() {
     this.catalogoService.getEstados().subscribe({
-      next: (data) => {
-        console.log('Estados cargados:', data);
-        this.estados = data;
-      },
+      next: (data) => { this.estados = data; },
       error: (err) => console.error('Error al cargar estados', err)
     });
 
     this.catalogoService.getTipos().subscribe({
-      next: (data) => {
-        console.log('Tipos cargados:', data);
-        this.tipos = data;
-        console.log("tipos: ",this.tipos)
-      },
+      next: (data) => { this.tipos = data; },
       error: (err) => console.error('Error al cargar tipos', err)
     });
   }
 
   guardar() {
-    // Verificamos que el idTipoInmueble tenga un valor válido antes de enviar
     if (this.inmueble.id_tipo_inmueble === 0) {
-      alert('Por favor selecciona un tipo de inmueble');
+      alert('Selecciona un tipo de inmueble');
+      return;
+    }
+    if (this.selectedFiles.length === 0) {
+      alert('Debes subir al menos 1 imagen');
       return;
     }
 
-    // Enviamos el objeto completo (se castea como 'any' o 'Inmueble' si es necesario)
-    this.inmuebleService.crearInmueble(this.inmueble as any).subscribe({
-      next: () => {
-        alert('Inmueble creado con éxito ✅');
-        // Opcional: resetear el formulario aquí
+    console.log('Enviando datos y fotos a Azure...');
+
+    this.inmuebleService.crearInmueble(this.inmueble, this.selectedFiles).subscribe({
+      next: (res) => {
+        console.log('Respuesta del servidor:', res);
+        alert('¡Inmueble creado y fotos subidas a Azure con éxito! ✅');
+        
+        // Ahora sí, ya existe el método para limpiar
+        this.inmueble = this.initInmueble(); 
+        this.selectedFiles = [];
+        this.fotosPreview = [];
       },
       error: (err) => {
-        console.error('Error al crear inmueble', err);
-        alert('Error al guardar: ' + (err.error?.message || 'Error de conexión'));
+        console.error('Error en el registro:', err);
+        alert('Error al guardar: ' + (err.error?.message || 'Error de conexión con el servidor'));
       }
     });
   }
