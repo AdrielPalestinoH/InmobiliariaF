@@ -22,4 +22,16 @@ export class Catalogo implements OnInit {
       error: (err) => console.error('Error al cargar inmuebles', err)
     });
   }
+
+  // NUEVO MÉTODO: Para encontrar la foto de Azure
+  obtenerImagenPrincipal(inmueble: Inmueble): string {
+    if (inmueble.imagenes && inmueble.imagenes.length > 0) {
+      // Buscamos la que tenga esPrincipal true en el JSON de Java
+      const principal = inmueble.imagenes.find(img => img.esPrincipal === true);
+      // Retornamos la URL de esa, o la primera si no hay marcada como principal
+      // OJO: Usamos 'url' porque así lo llamamos en el DTO de Java
+      return principal ? principal.url : inmueble.imagenes[0].url;
+    }
+    return 'https://picsum.photos/400/300'; // Fallback si no hay fotos
+  }
 }
