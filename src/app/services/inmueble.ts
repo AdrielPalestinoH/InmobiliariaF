@@ -79,4 +79,10 @@ export class InmuebleService {
   actualizar(id: number, inmueble: Inmueble): Observable<Inmueble> {
     return this.http.put<Inmueble>(`${this.apiUrl}/${id}`, inmueble);
   }
+
+  // inmueble.service.ts (el real)
+
+  obtenerPorId(id: number): Observable<Inmueble> {
+    return this.http.get<Inmueble>(`${this.apiUrl}/${id}`);
+  }
 }
