@@ -92,7 +92,15 @@ if (this.fileInput) this.fileInput.nativeElement.value = '';
     fraccion: '',
     terrenoM2: 0,
     disponibilidad: 'DISPONIBLE',
-    idTipoInmueble: 1
+    idTipoInmueble: 1,
+    // Inicializar nuevos campos
+    banos: 0,
+    recamaras: 0,
+    estacionamientos: 0,
+    niveles: 1,
+    construccionM2: 0,
+    caracteristicas: ''
+    
   };
 }
 

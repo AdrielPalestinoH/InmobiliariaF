@@ -57,6 +57,34 @@
           <label>Terreno M2</label>
           <input type="number" class="form-control" [(ngModel)]="inmuebleActual.terrenoM2" name="terrenoM2" />
         </div>
+        <hr class="my-4" />
+        <div class="row border-top pt-3 mt-2">
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Recámaras</label>
+    <input type="number" class="form-control" [(ngModel)]="inmuebleActual.recamaras" name="recamaras" min="0">
+  </div>
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Baños</label>
+    <input type="number" class="form-control" [(ngModel)]="inmuebleActual.banos" name="banos" min="0">
+  </div>
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Cochera</label>
+    <input type="number" class="form-control" [(ngModel)]="inmuebleActual.estacionamientos" name="estacionamientos" min="0">
+  </div>
+  <div class="col-md-2 mb-3">
+    <label class="form-label">Niveles</label>
+    <input type="number" class="form-control" [(ngModel)]="inmuebleActual.niveles" name="niveles" min="1">
+  </div>
+  <div class="col-md-4 mb-3">
+    <label class="form-label">Construcción M2</label>
+    <input type="number" class="form-control" [(ngModel)]="inmuebleActual.construccionM2" name="construccionM2">
+  </div>
+  <div class="col-md-12 mb-3">
+    <label class="form-label">Características / Extras</label>
+    <textarea class="form-control" [(ngModel)]="inmuebleActual.caracteristicas" name="caracteristicas" 
+              placeholder="Ej: Alberca, cocina integral, seguridad..." rows="2"></textarea>
+  </div>
+</div>
 
      <div class="col-12 mb-4">
   <label class="form-label"><strong>Galería de Imágenes (Máximo 4)</strong></label>

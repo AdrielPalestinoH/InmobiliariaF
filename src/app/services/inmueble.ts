@@ -23,6 +23,13 @@ export interface Inmueble {
   descripcion?: string; 
   tipoDescripcion?: string;
   estadoDescripcion?: string;
+  // --- NUEVOS CAMPOS ---
+  banos?: number;
+  recamaras?: number;
+  estacionamientos?: number;
+  niveles?: number;
+  construccionM2?: number;
+  caracteristicas?: string;
   [key: string]: any; // 👈 Esto le dice a TypeScript: "Acepta cualquier otra propiedad extra"
 }
 
