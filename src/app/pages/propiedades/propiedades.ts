@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Inmueble } from "../../services/inmueble";
+import { Inmueble, InmuebleService } from "../../services/inmueble"; // 👈 Usar servicio real
 import { Navbar } from "../../shared/navbar/navbar";
 import { Footer } from "../../shared/footer/footer";
-import { InmuebleMockService } from "../../services/inmueble-mock";
 import { PropiedadCard } from "../../shared/propiedad-card/propiedad-card";
 
 @Component({
@@ -15,35 +14,36 @@ import { PropiedadCard } from "../../shared/propiedad-card/propiedad-card";
 })
 export class Propiedades implements OnInit {
   inmuebles: Inmueble[] = [];
-  inmueblesView: any[] = [];
+  inmueblesView: Inmueble[] = [];
 
-  //Aqui cambiamos al componente de produccion
-  //constructor(private inmuebleService: InmuebleService) {}
-  constructor(private inmuebleServiceMock: InmuebleMockService) {}
+  // ✅ Inyectamos el servicio real
+  constructor(private inmuebleService: InmuebleService) {}
 
   ngOnInit() {
-    this.inmuebleServiceMock.getPropiedades().subscribe({
+    this.cargarPropiedades();
+  }
+
+  cargarPropiedades() {
+    this.inmuebleService.listarInmuebles().subscribe({
       next: (data) => {
+        // Guardamos los datos reales de la BD
         this.inmuebles = data;
-        this.inmueblesView = Array.isArray(data) ? [...data] : [];
+        this.inmueblesView = [...data];
       },
       error: (err) => {
-        console.error("Error al cargar propiedades", err);
-        this.inmuebles = [];
-        this.inmueblesView = [];
+        console.error("Error al cargar propiedades de la API", err);
       },
     });
   }
 
   onOrdenChange(event: Event) {
     const orden = (event.target as HTMLSelectElement).value;
-
     const base = [...this.inmuebles];
 
     if (orden === "priceAsc") {
-      base.sort((a, b) => (Number(a.precio) || 0) - (Number(b.precio) || 0));
+      base.sort((a, b) => a.precio - b.precio);
     } else if (orden === "priceDesc") {
-      base.sort((a, b) => (Number(b.precio) || 0) - (Number(a.precio) || 0));
+      base.sort((a, b) => b.precio - a.precio);
     }
 
     this.inmueblesView = base;
