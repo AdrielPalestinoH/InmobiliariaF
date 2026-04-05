@@ -49,11 +49,11 @@ cargarCatalogos() {
   
   // 1. Intenta cargar usuarios SIN el v1 si con v1 da 404
   // O revisa si la ruta es plural/singular (usuario vs usuarios)
-  this.http.get<any[]>(`${baseUrlV1}/usuarios`).subscribe({
+  this.http.get<any[]>(`${baseUrlV1}/usuarios/debug`).subscribe({
     next: (data) => this.clientes = data,
     error: () => {
       // Intento de rescate si la ruta no tiene v1
-      this.http.get<any[]>('https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/usuarios')
+      this.http.get<any[]>('https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/usuarios/debug')
         .subscribe(data => this.clientes = data);
     }
   });
