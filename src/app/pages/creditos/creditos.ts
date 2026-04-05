@@ -65,8 +65,6 @@ cargarCatalogos() {
 
 
 guardar() {
-  // 1. Preparamos el JSON con los nombres exactos y convirtiendo a números
-  // para evitar errores de tipo en el Backend
   const payload = {
     usuarioId: Number(this.nuevo.usuarioId),
     inmuebleId: Number(this.nuevo.inmuebleId),
@@ -77,26 +75,30 @@ guardar() {
     tasaInteresMoratorioPct: Number(this.nuevo.tasaInteresMoratorioPct),
     plazoTotalMeses: Number(this.nuevo.plazoTotalMeses),
     diaPagoMensual: Number(this.nuevo.diaPagoMensual),
-    saldoInsolutoActual: Number(this.nuevo.montoCredito), // El saldo inicial es el monto del crédito
+    saldoInsolutoActual: Number(this.nuevo.montoCredito),
     fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
   };
 
-  console.log("📤 Enviando JSON a Azure:", payload);
-
-  // 🎯 LA URL CORRECTA SEGÚN TU ENDPOINT
   const urlFinal = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear';
 
+  // Agregamos { responseType: 'text' } si el JSON es demasiado grande o viene mal formado
+  // O simplemente manejamos el status 201 como éxito
   this.http.post(urlFinal, payload).subscribe({
     next: (res) => {
-      console.log("✅ Respuesta del servidor:", res);
-      alert('¡Crédito y Tabla de Amortización generados con éxito! 🚀');
+      alert('¡Crédito generado con éxito! 🚀');
       this.mostrarFormulario = false;
-      this.cargarCreditos(); // Refrescamos la lista
+      this.cargarCreditos();
     },
     error: (err) => {
-      console.error("❌ Error en el POST:", err);
-      // Si sale 400, revisa que el usuarioId y inmuebleId existan en la BD
-      alert('Error al crear el crédito. Revisa la consola para más detalles.');
+      // Si el status es 201 o 200, ES UN ÉXITO, aunque Angular llore por el parseo del JSON
+      if (err.status === 201 || err.status === 200) {
+        alert('¡Crédito generado con éxito! 🚀');
+        this.mostrarFormulario = false;
+        this.cargarCreditos();
+      } else {
+        console.error("❌ Error real en el POST:", err);
+        alert('Error al crear el crédito. Revisa la consola.');
+      }
     }
   });
 }
