@@ -44,35 +44,53 @@ export class Creditos implements OnInit {
     this.http.get<any[]>(url).subscribe(data => this.creditos = data);
   }
 
-  cargarCatalogos() {
-    const baseUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api';
-    this.http.get<any[]>(`${baseUrl}/usuarios`).subscribe(data => this.clientes = data);
-    this.http.get<any[]>(`${baseUrl}/inmuebles`).subscribe(data => this.inmuebles = data);
-  }
+ cargarCatalogos() {
+  // 🎯 Agregamos el /v1/ que es donde tu API realmente escucha
+  const baseUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
+
+  this.http.get<any[]>(`${baseUrl}/usuarios`).subscribe({
+    next: (data) => {
+      this.clientes = data;
+      console.log('✅ Usuarios cargados:', data);
+    },
+    error: (err) => console.error('❌ Error 404 en Usuarios - Revisa la ruta:', err)
+  });
+
+  this.http.get<any[]>(`${baseUrl}/inmuebles`).subscribe({
+    next: (data) => {
+      this.inmuebles = data;
+      console.log('✅ Inmuebles cargados:', data);
+    },
+    error: (err) => console.error('❌ Error 404 en Inmuebles - Revisa la ruta:', err)
+  });
+}
 
 
 
-  guardar() {
-    // Sincronizamos el saldo insoluto inicial con el monto del crédito
-    this.nuevo.saldoInsolutoActual = this.nuevo.montoCredito;
-    
-    // Formateamos la fecha para que Azure no la rechace
-    const payload = {
-      ...this.nuevo,
-      fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
-    };
+guardar() {
+  // Sincronizar saldo antes de enviar
+  this.nuevo.saldoInsolutoActual = this.nuevo.montoCredito;
 
-    const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/creditos';
-    
-    this.http.post(url, payload).subscribe({
-      next: () => {
-        alert('Crédito guardado y tabla generada ✅');
-        this.mostrarFormulario = false;
-        this.cargarCreditos();
-      },
-      error: (err) => console.error('Error al guardar', err)
-    });
-  }
+  const payload = {
+    ...this.nuevo,
+    fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
+  };
+
+  // 🎯 URL con v1 para el POST
+  const urlCreditos = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
+
+  this.http.post(urlCreditos, payload).subscribe({
+    next: (res) => {
+      alert('¡Crédito creado con éxito! 🚀');
+      this.mostrarFormulario = false;
+      this.cargarCreditos();
+    },
+    error: (err) => {
+      console.error('❌ Error al crear crédito:', err);
+      alert('Error al guardar. Revisa que el ID del usuario e inmueble existan.');
+    }
+  });
+}
 
   nuevoCredito() {
     this.nuevo = {
