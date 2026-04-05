@@ -37,7 +37,7 @@
   <div *ngIf="mostrarFormulario" class="card p-4 shadow-sm">
     <h4 class="mb-3">{{ nuevo.id ? 'Editar Crédito' : 'Nuevo Crédito' }}</h4>
 
-    <form (ngSubmit)="nuevo.id ? reestructurar() : guardar()">
+    <form (ngSubmit)="guardar()">
       <div class="row">
         <div class="col-md-6 mb-3">
           <label>Cliente</label>
