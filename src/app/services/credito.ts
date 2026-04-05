@@ -4,34 +4,42 @@ import { Observable } from 'rxjs';
 
 export interface Credito {
   id?: number;
-  total?: number;
-  totalPagos?: number;
-  referencia?: string;
-  estatus?: string;
-  fechaInicio?: string;
-  fechaFinal?: string;
-  usuarioId?: number;
-  inmuebleId?: number;
+  usuarioId: number;
+  inmuebleId: number;
+  montoEnganche: number;
+  montoCredito: number;
+  comisionAperturaPct: number;
+  tasaInteresAnualPct: number;
+  tasaInteresMoratorioPct: number;
+  plazoTotalMeses: number;
+  diaPagoMensual: number;
+  saldoInsolutoActual: number;
+  fechaApertura: string;
+  // Campos auxiliares para la tabla de la lista
   usuarioNombre?: string;
   inmuebleDescripcion?: string;
-  frecuencia?: string; // 👈 este campo debe existir
 }
 
 @Injectable({ providedIn: 'root' })
 export class CreditoService {
-  private apiUrl = 'https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/creditos';
-
+private readonly API_BASE = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api';
   constructor(private http: HttpClient) {}
 
-  listar(): Observable<Credito[]> {
-    return this.http.get<Credito[]>(this.apiUrl);
+  listar(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_BASE}/creditos`);
   }
 
-  crear(c: Credito): Observable<Credito> {
-    return this.http.post<Credito>(this.apiUrl, c);
+  crear(c: Credito): Observable<any> {
+    // Este enviará el JSON completo que definimos al endpoint POST /api/creditos
+    return this.http.post<any>(`${this.API_BASE}/creditos`, c);
   }
 
-  reestructurar(id: number, nuevoTotal: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/reestructurar?pagos=${nuevoTotal}`, {});
+  // Por si ocupas los catálogos desde el mismo servicio
+  obtenerUsuarios(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_BASE}/usuarios`);
+  }
+
+  obtenerInmuebles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_BASE}/inmuebles`);
   }
 }

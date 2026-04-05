@@ -12,24 +12,27 @@ import { CreditoService, Credito } from '../../services/credito';
   styleUrls: ['./creditos.scss']
 })
 export class Creditos implements OnInit {
-  creditos: Credito[] = [];
+  creditos: any[] = [];
   clientes: any[] = [];
   inmuebles: any[] = [];
   mostrarFormulario = false;
 
+  // Objeto 'nuevo' adaptado al JSON de Azure
   nuevo: any = {
-    id: null,
     usuarioId: null,
     inmuebleId: null,
-    total: 0,
-    totalPagos: 1,
-    frecuencia: 'MENSUAL',
-    referencia: '',
-    fechaInicio: new Date().toISOString().substring(0, 10),
-    fechaFinal: ''
+    montoEnganche: 0,
+    montoCredito: 0,
+    comisionAperturaPct: 1.5,
+    tasaInteresAnualPct: 12.0,
+    tasaInteresMoratorioPct: 5.0,
+    plazoTotalMeses: 24,
+    diaPagoMensual: 15,
+    saldoInsolutoActual: 0,
+    fechaApertura: new Date().toISOString().substring(0, 10)
   };
 
-  constructor(private creditoService: CreditoService, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.cargarCreditos();
@@ -37,80 +40,54 @@ export class Creditos implements OnInit {
   }
 
   cargarCreditos() {
-    this.creditoService.listar().subscribe({
-      next: (data) => (this.creditos = data),
-      error: (err) => console.error('Error al cargar créditos', err)
-    });
+    const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/creditos';
+    this.http.get<any[]>(url).subscribe(data => this.creditos = data);
   }
 
   cargarCatalogos() {
-    this.http.get<any[]>('https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/usuarios').subscribe({
-      next: (data) => (this.clientes = data),
-      error: (err) => console.error('Error al cargar usuarios', err)
-    });
-    this.http.get<any[]>('https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/inmuebles').subscribe({
-      next: (data) => (this.inmuebles = data),
-      error: (err) => console.error('Error al cargar inmuebles', err)
+    const baseUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api';
+    this.http.get<any[]>(`${baseUrl}/usuarios`).subscribe(data => this.clientes = data);
+    this.http.get<any[]>(`${baseUrl}/inmuebles`).subscribe(data => this.inmuebles = data);
+  }
+
+  guardar() {
+    // Sincronizamos el saldo insoluto inicial con el monto del crédito
+    this.nuevo.saldoInsolutoActual = this.nuevo.montoCredito;
+    
+    // Formateamos la fecha para que Azure no la rechace
+    const payload = {
+      ...this.nuevo,
+      fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
+    };
+
+    const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/creditos';
+    
+    this.http.post(url, payload).subscribe({
+      next: () => {
+        alert('Crédito guardado y tabla generada ✅');
+        this.mostrarFormulario = false;
+        this.cargarCreditos();
+      },
+      error: (err) => console.error('Error al guardar', err)
     });
   }
 
   nuevoCredito() {
     this.nuevo = {
-      id: null,
       usuarioId: null,
       inmuebleId: null,
-      total: 0,
-      totalPagos: 1,
-      frecuencia: 'MENSUAL',
-      referencia: '',
-      fechaInicio: new Date().toISOString().substring(0, 10),
-      fechaFinal: ''
+      montoEnganche: 0,
+      montoCredito: 0,
+      comisionAperturaPct: 1.5,
+      tasaInteresAnualPct: 12.0,
+      tasaInteresMoratorioPct: 5.0,
+      plazoTotalMeses: 24,
+      diaPagoMensual: 15,
+      saldoInsolutoActual: 0,
+      fechaApertura: new Date().toISOString().substring(0, 10)
     };
     this.mostrarFormulario = true;
   }
 
-  guardar() {
-    this.creditoService.crear(this.nuevo).subscribe({
-      next: () => {
-        alert('Crédito creado ✅');
-        this.mostrarFormulario = false;
-        this.cargarCreditos();
-      },
-      error: (err) => console.error('Error al guardar crédito', err)
-    });
-  }
-
-  editar(c: any) {
-    this.nuevo = { ...c };
-    this.mostrarFormulario = true;
-  }
-
-reestructurar() {
-  if (!this.nuevo.id || !this.nuevo.totalPagos) {
-    alert('Debe seleccionar un crédito y definir el número de pagos');
-    return;
-  }
-
-  const url = `https://inmoapi-adagc9dgfjgnfuar.westus-01.azurewebsites.net/api/creditos/${this.nuevo.id}/reestructurar?nuevoTotalPagos=${this.nuevo.totalPagos}&frecuencia=${this.nuevo.frecuencia}`;
-
-  console.log('📤 Enviando reestructuración a:', url);
-
-  this.http.put(url, null, { responseType: 'text' }).subscribe({
-    next: (response) => {
-      console.log('✅ Respuesta backend:', response);
-      alert('Crédito reestructurado correctamente ✅');
-      this.mostrarFormulario = false;
-      this.cargarCreditos();
-    },
-    error: (err) => {
-      console.error('❌ Error al reestructurar crédito', err);
-      alert('Error al reestructurar crédito ❌');
-    }
-  });
-}
-
-
-  cancelar() {
-    this.mostrarFormulario = false;
-  }
+  cancelar() { this.mostrarFormulario = false; }
 }
