@@ -39,11 +39,18 @@ export class Creditos implements OnInit {
     this.cargarCatalogos();
   }
 
-  cargarCreditos() {
-    const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/creditos';
-    this.http.get<any[]>(url).subscribe(data => this.creditos = data);
-  }
-
+cargarCreditos() {
+  // 1. Agregamos el /v1/ que faltaba
+  const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
+  
+  this.http.get<any[]>(url).subscribe({
+    next: (data) => {
+      this.creditos = data;
+      console.log("Créditos recibidos:", data);
+    },
+    error: (err) => console.error("Error al cargar créditos:", err)
+  });
+}
 cargarCatalogos() {
   const baseUrlV1 = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
   
