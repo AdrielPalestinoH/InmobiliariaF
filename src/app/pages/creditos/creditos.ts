@@ -63,26 +63,37 @@ cargarCatalogos() {
 }
 
 
-
 guardar() {
+  // Aseguramos que los valores sean números
+  const enganche = Number(this.nuevo.montoEnganche);
+  const totalInmueble = Number(this.nuevo.montoCredito);
+  
+  // 🎯 IMPORTANTE: 
+  // Si tu backend espera que 'montoCredito' sea el préstamo neto:
+  // const prestamoNeto = totalInmueble - enganche; 
+  // Pero vamos a mandarlos tal cual, asegurando que no sean cero.
+
   const payload = {
     usuarioId: Number(this.nuevo.usuarioId),
     inmuebleId: Number(this.nuevo.inmuebleId),
-    montoEnganche: Number(this.nuevo.montoEnganche),
-    montoCredito: Number(this.nuevo.montoCredito),
+    montoEnganche: enganche,
+    montoCredito: totalInmueble, // <--- Verifica si aquí debes mandar el total o la resta
     comisionAperturaPct: Number(this.nuevo.comisionAperturaPct),
     tasaInteresAnualPct: Number(this.nuevo.tasaInteresAnualPct),
     tasaInteresMoratorioPct: Number(this.nuevo.tasaInteresMoratorioPct),
     plazoTotalMeses: Number(this.nuevo.plazoTotalMeses),
     diaPagoMensual: Number(this.nuevo.diaPagoMensual),
-    saldoInsolutoActual: Number(this.nuevo.montoCredito),
+    saldoInsolutoActual: totalInmueble,
     fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
   };
 
+  if (payload.montoCredito <= 0) {
+    alert("El monto del crédito debe ser mayor a cero antes de enviar.");
+    return;
+  }
+
   const urlFinal = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear';
 
-  // Agregamos { responseType: 'text' } si el JSON es demasiado grande o viene mal formado
-  // O simplemente manejamos el status 201 como éxito
   this.http.post(urlFinal, payload).subscribe({
     next: (res) => {
       alert('¡Crédito generado con éxito! 🚀');
@@ -90,14 +101,14 @@ guardar() {
       this.cargarCreditos();
     },
     error: (err) => {
-      // Si el status es 201 o 200, ES UN ÉXITO, aunque Angular llore por el parseo del JSON
+      // Si el servidor responde 201 'Created', es un éxito aunque haya error de parseo JSON
       if (err.status === 201 || err.status === 200) {
         alert('¡Crédito generado con éxito! 🚀');
         this.mostrarFormulario = false;
         this.cargarCreditos();
       } else {
-        console.error("❌ Error real en el POST:", err);
-        alert('Error al crear el crédito. Revisa la consola.');
+        console.error("❌ Error 400 - El Backend rechazó los datos:", err.error);
+        alert(`Error del servidor: ${err.error}`); 
       }
     }
   });
