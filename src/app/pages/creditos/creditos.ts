@@ -50,6 +50,8 @@ export class Creditos implements OnInit {
     this.http.get<any[]>(`${baseUrl}/inmuebles`).subscribe(data => this.inmuebles = data);
   }
 
+
+
   guardar() {
     // Sincronizamos el saldo insoluto inicial con el monto del crédito
     this.nuevo.saldoInsolutoActual = this.nuevo.montoCredito;
