@@ -64,51 +64,39 @@ cargarCatalogos() {
 
 
 guardar() {
-  // Aseguramos que los valores sean números
-  const enganche = Number(this.nuevo.montoEnganche);
-  const totalInmueble = Number(this.nuevo.montoCredito);
-  
-  // 🎯 IMPORTANTE: 
-  // Si tu backend espera que 'montoCredito' sea el préstamo neto:
-  // const prestamoNeto = totalInmueble - enganche; 
-  // Pero vamos a mandarlos tal cual, asegurando que no sean cero.
-
   const payload = {
     usuarioId: Number(this.nuevo.usuarioId),
     inmuebleId: Number(this.nuevo.inmuebleId),
-    montoEnganche: enganche,
-    montoCredito: totalInmueble, // <--- Verifica si aquí debes mandar el total o la resta
+    montoEnganche: Number(this.nuevo.montoEnganche),
+    montoCredito: Number(this.nuevo.montoCredito),
     comisionAperturaPct: Number(this.nuevo.comisionAperturaPct),
     tasaInteresAnualPct: Number(this.nuevo.tasaInteresAnualPct),
     tasaInteresMoratorioPct: Number(this.nuevo.tasaInteresMoratorioPct),
     plazoTotalMeses: Number(this.nuevo.plazoTotalMeses),
     diaPagoMensual: Number(this.nuevo.diaPagoMensual),
-    saldoInsolutoActual: totalInmueble,
+    saldoInsolutoActual: Number(this.nuevo.montoCredito),
     fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
   };
 
-  if (payload.montoCredito <= 0) {
-    alert("El monto del crédito debe ser mayor a cero antes de enviar.");
-    return;
-  }
-
   const urlFinal = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear';
 
-  this.http.post(urlFinal, payload).subscribe({
-    next: (res) => {
+  // 🎯 El cambio clave: añadimos { responseType: 'text' } como tercer parámetro
+  this.http.post(urlFinal, payload, { responseType: 'text' }).subscribe({
+    next: () => {
+      // Si entra aquí es que devolvió 200 o 201 (¡ÉXITO!)
       alert('¡Crédito generado con éxito! 🚀');
       this.mostrarFormulario = false;
       this.cargarCreditos();
     },
     error: (err) => {
-      // Si el servidor responde 201 'Created', es un éxito aunque haya error de parseo JSON
+      // Si el status es 201, aunque diga "error" por la red, se guardó
       if (err.status === 201 || err.status === 200) {
         alert('¡Crédito generado con éxito! 🚀');
         this.mostrarFormulario = false;
         this.cargarCreditos();
       } else {
-        console.error("❌ Error 400 - El Backend rechazó los datos:", err.error);
-        alert(`Error del servidor: ${err.error}`); 
+        console.error("❌ Error real del servidor:", err);
+        alert('Error al crear el crédito. Revisa los datos.');
       }
     }
   });
