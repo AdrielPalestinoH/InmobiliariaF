@@ -44,25 +44,22 @@ export class Creditos implements OnInit {
     this.http.get<any[]>(url).subscribe(data => this.creditos = data);
   }
 
- cargarCatalogos() {
-  // 🎯 Agregamos el /v1/ que es donde tu API realmente escucha
-  const baseUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
-
-  this.http.get<any[]>(`${baseUrl}/usuarios`).subscribe({
-    next: (data) => {
-      this.clientes = data;
-      console.log('✅ Usuarios cargados:', data);
-    },
-    error: (err) => console.error('❌ Error 404 en Usuarios - Revisa la ruta:', err)
+cargarCatalogos() {
+  const baseUrlV1 = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
+  
+  // 1. Intenta cargar usuarios SIN el v1 si con v1 da 404
+  // O revisa si la ruta es plural/singular (usuario vs usuarios)
+  this.http.get<any[]>(`${baseUrlV1}/usuarios`).subscribe({
+    next: (data) => this.clientes = data,
+    error: () => {
+      // Intento de rescate si la ruta no tiene v1
+      this.http.get<any[]>('https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/usuarios')
+        .subscribe(data => this.clientes = data);
+    }
   });
 
-  this.http.get<any[]>(`${baseUrl}/inmuebles`).subscribe({
-    next: (data) => {
-      this.inmuebles = data;
-      console.log('✅ Inmuebles cargados:', data);
-    },
-    error: (err) => console.error('❌ Error 404 en Inmuebles - Revisa la ruta:', err)
-  });
+  // 2. Inmuebles ya sabemos que funciona con v1
+  this.http.get<any[]>(`${baseUrlV1}/inmuebles`).subscribe(data => this.inmuebles = data);
 }
 
 

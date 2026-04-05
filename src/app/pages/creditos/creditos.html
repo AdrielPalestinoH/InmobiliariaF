@@ -21,7 +21,7 @@
         <tr *ngFor="let c of creditos">
           <td>{{ c.id }}</td>
           <td>{{ c.usuarioNombre || 'Cargando...' }}</td>
-          <td>{{ c.inmuebleDescripcion || 'Cargando...' }}</td>
+         <td>{{ c.inmuebleTitulo || 'N/A' }}</td>
           <td>{{ c.montoCredito | currency }}</td>
           <td>{{ c.plazoTotalMeses }} meses</td>
           <td>{{ c.tasaInteresAnualPct }}%</td>
@@ -47,8 +47,9 @@
           <label class="form-label">Inmueble</label>
           <select [(ngModel)]="nuevo.inmuebleId" name="inmuebleId" class="form-select" required>
             <option [value]="null">Seleccione inmueble...</option>
-            <option *ngFor="let i of inmuebles" [value]="i.id">{{ i.descripcion }}</option>
-          </select>
+<option *ngFor="let i of inmuebles" [value]="i.id">
+  {{ i.titulo }} - {{ i.precio | currency }}
+</option>          </select>
         </div>
 
         <div class="col-md-4 mb-3">
