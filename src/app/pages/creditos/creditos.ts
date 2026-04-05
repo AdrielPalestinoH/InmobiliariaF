@@ -65,26 +65,38 @@ cargarCatalogos() {
 
 
 guardar() {
-  // Sincronizar saldo antes de enviar
-  this.nuevo.saldoInsolutoActual = this.nuevo.montoCredito;
-
+  // 1. Preparamos el JSON con los nombres exactos y convirtiendo a números
+  // para evitar errores de tipo en el Backend
   const payload = {
-    ...this.nuevo,
+    usuarioId: Number(this.nuevo.usuarioId),
+    inmuebleId: Number(this.nuevo.inmuebleId),
+    montoEnganche: Number(this.nuevo.montoEnganche),
+    montoCredito: Number(this.nuevo.montoCredito),
+    comisionAperturaPct: Number(this.nuevo.comisionAperturaPct),
+    tasaInteresAnualPct: Number(this.nuevo.tasaInteresAnualPct),
+    tasaInteresMoratorioPct: Number(this.nuevo.tasaInteresMoratorioPct),
+    plazoTotalMeses: Number(this.nuevo.plazoTotalMeses),
+    diaPagoMensual: Number(this.nuevo.diaPagoMensual),
+    saldoInsolutoActual: Number(this.nuevo.montoCredito), // El saldo inicial es el monto del crédito
     fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
   };
 
-  // 🎯 URL con v1 para el POST
-  const urlCreditos = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
+  console.log("📤 Enviando JSON a Azure:", payload);
 
-  this.http.post(urlCreditos, payload).subscribe({
+  // 🎯 LA URL CORRECTA SEGÚN TU ENDPOINT
+  const urlFinal = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear';
+
+  this.http.post(urlFinal, payload).subscribe({
     next: (res) => {
-      alert('¡Crédito creado con éxito! 🚀');
+      console.log("✅ Respuesta del servidor:", res);
+      alert('¡Crédito y Tabla de Amortización generados con éxito! 🚀');
       this.mostrarFormulario = false;
-      this.cargarCreditos();
+      this.cargarCreditos(); // Refrescamos la lista
     },
     error: (err) => {
-      console.error('❌ Error al crear crédito:', err);
-      alert('Error al guardar. Revisa que el ID del usuario e inmueble existan.');
+      console.error("❌ Error en el POST:", err);
+      // Si sale 400, revisa que el usuarioId y inmuebleId existan en la BD
+      alert('Error al crear el crédito. Revisa la consola para más detalles.');
     }
   });
 }
