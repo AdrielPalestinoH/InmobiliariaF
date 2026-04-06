@@ -3,6 +3,7 @@ import { NgFor, NgIf, DatePipe, CurrencyPipe,NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CreditoService, Credito } from '../../services/credito';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-creditos',
@@ -58,7 +59,11 @@ export class Creditos implements OnInit {
     fechaApertura: new Date().toISOString().substring(0, 10)
   };
 
-  constructor(private http: HttpClient) {}
+constructor(
+  public authService: AuthService, // 👈 Public para que el HTML lo use
+  private http: HttpClient,
+  // ... otros servicios
+) {}
 
   ngOnInit() {
     this.cargarCreditos();
@@ -66,15 +71,17 @@ export class Creditos implements OnInit {
   }
 
 cargarCreditos() {
-  // 1. Agregamos el /v1/ que faltaba
-  const url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
+  const user = this.authService.getUsuarioActual();
+  let url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
   
+  // Si es cliente, agregamos el parámetro de filtro
+  if (this.authService.isCliente()) {
+    url += `?usuarioId=${user.id}`; // Asegúrate de que el objeto user tenga el campo 'id'
+  }
+
   this.http.get<any[]>(url).subscribe({
-    next: (data) => {
-      this.creditos = data;
-      console.log("Créditos recibidos:", data);
-    },
-    error: (err) => console.error("Error al cargar créditos:", err)
+    next: (data) => this.creditos = data,
+    error: (err) => console.error("Error:", err)
   });
 }
 cargarCatalogos() {
