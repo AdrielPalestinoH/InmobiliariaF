@@ -10,61 +10,67 @@
   </div>
 
   <div *ngIf="!mostrarFormulario" class="card shadow-sm border-0">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="bg-light">
-          <tr>
-            <th class="ps-4">ID</th>
-            <th>Cliente</th>
-            <th>Inmueble</th>
-            <th>Monto Neto</th>
-            <th>Plazo / Tasa</th>
-            <th class="text-end pe-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let c of creditos">
-            <td class="ps-4"><span class="fw-bold">#{{ c.id }}</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar-sm me-2 bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                  {{ (c.usuario?.nombre?.substring(0,1) || 'U') }}
-                </div>
-                <div>
-                  <div class="fw-semibold">{{ c.usuario?.nombre }} {{ c.usuario?.apellidos }}</div>
-                  <small class="text-muted">ID: {{ c.usuarioId }}</small>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="text-truncate" style="max-width: 200px;">
-                <i class="bi bi-house-door text-muted me-1"></i>
-                {{ c.inmueble?.titulo || 'Inmueble #' + c.inmuebleId }}
-              </div>
-            </td>
-            <td>
-              <div class="fw-bold text-dark">{{ c.montoCredito | currency }}</div>
-              <small class="text-success">Enganche: {{ c.montoEnganche | currency }}</small>
-            </td>
-            <td>
-              <div><span class="badge bg-blue-lite text-primary">{{ c.plazoTotalMeses }} meses</span></div>
-              <small class="text-muted">{{ c.tasaInteresAnualPct }}% anual</small>
-            </td>
-            <td class="text-end pe-4">
-              <button class="btn btn-outline-primary btn-sm rounded-pill">
-                Ver Tabla
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="creditos.length === 0">
-            <td colspan="6" class="text-center py-5">
-              <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png" width="80" class="mb-3 opacity-50">
-              <p class="text-muted">No hay créditos registrados aún.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+ <div class="table-responsive">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="bg-light">
+      <tr>
+        <th class="ps-4">ID</th>
+        <th>Cliente</th>
+        <th>Inmueble</th>
+        <th>Monto Crédito</th>
+        <th>Plazo / Tasa</th>
+        <th class="text-end pe-4">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of creditos">
+        <td class="ps-4"><span class="fw-bold">#{{ c.id }}</span></td>
+
+        <td>
+          <div class="d-flex align-items-center">
+            <div class="avatar-sm me-2 bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem;">
+              {{ (c.clienteNombre?.substring(0,1) || 'C') }}
+            </div>
+            <div>
+              <div class="fw-semibold text-dark">{{ c.clienteNombre }}</div>
+              <small class="text-muted">Apertura: {{ c.apertura | date:'shortDate' }}</small>
+            </div>
+          </div>
+        </td>
+
+        <td>
+          <div class="text-truncate" style="max-width: 220px;" [title]="c.inmuebleTitulo">
+            <i class="bi bi-house-door text-muted me-1"></i>
+            {{ c.inmuebleTitulo }}
+          </div>
+        </td>
+
+        <td>
+          <div class="fw-bold text-dark">{{ c.monto | currency }}</div>
+          <small class="text-muted text-uppercase" style="font-size: 0.7rem;">Capital Neto</small>
+        </td>
+
+        <td>
+          <div><span class="badge bg-blue-lite text-primary">{{ c.meses }} meses</span></div>
+          <small class="text-muted">{{ c.tasa }}% anual</small>
+        </td>
+
+        <td class="text-end pe-4">
+          <button class="btn btn-outline-primary btn-sm rounded-pill px-3">
+            <i class="bi bi-calendar3 me-1"></i> Ver Tabla
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="creditos && creditos.length === 0">
+        <td colspan="6" class="text-center py-5">
+          <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png" width="60" class="mb-3 opacity-50">
+          <p class="text-muted">No se encontraron créditos registrados.</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
   </div>
 
   <div *ngIf="mostrarFormulario" class="card border-0 shadow-lg animate__animated animate__fadeInUp">
