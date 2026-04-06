@@ -1,12 +1,36 @@
 <div class="d-flex flex-column vh-100 bg-primary text-white p-3">
-  <h4 class="mb-4">Tu Casa</h4>
+  <h4 class="mb-4 text-center fw-bold">Tu Casa</h4>
   <ul class="nav nav-pills flex-column mb-auto">
-    <li><a routerLink="/dashboard" class="nav-link text-white">Dashboard</a></li>
-    <li><a routerLink="/catalogo" class="nav-link text-white">Inmuebles</a></li>
-    <li><a routerLink="/clientes" class="nav-link text-white">Clientes</a></li>
-    <li><a routerLink="/productos" class="nav-link text-white">Productos</a></li>
-    <li><a routerLink="/pagos" class="nav-link text-white">Pagos</a></li>
-    <li><a routerLink="/usuarios" class="nav-link text-white">Usuarios</a></li>
-    <li><a routerLink="/creditos" class="nav-link text-white">Créditos</a></li>
+    
+    <li *ngIf="authService.isAdmin()">
+      <a routerLink="/dashboard" class="nav-link text-white">
+        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/catalogo" class="nav-link text-white">
+        <i class="bi bi-house me-2"></i> Inmuebles
+      </a>
+    </li>
+
+    <ng-container *ngIf="authService.isAdmin()">
+      <li><a routerLink="/clientes" class="nav-link text-white"><i class="bi bi-people me-2"></i> Clientes</a></li>
+      <li><a routerLink="/productos" class="nav-link text-white"><i class="bi bi-box me-2"></i> Productos</a></li>
+      <li><a routerLink="/pagos" class="nav-link text-white"><i class="bi bi-cash me-2"></i> Pagos</a></li>
+      <li><a routerLink="/usuarios" class="nav-link text-white"><i class="bi bi-person-badge me-2"></i> Usuarios</a></li>
+    </ng-container>
+
+    <li>
+      <a routerLink="/creditos" class="nav-link text-white">
+        <i class="bi bi-card-checklist me-2"></i> Créditos
+      </a>
+    </li>
+
   </ul>
+
+  <hr>
+  <button (click)="authService.logout()" class="btn btn-link text-white text-decoration-none text-start p-0">
+    <i class="bi bi-box-arrow-left me-2"></i> Cerrar Sesión
+  </button>
 </div>
