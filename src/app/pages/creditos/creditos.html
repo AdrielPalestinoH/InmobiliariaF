@@ -364,9 +364,17 @@
                   {{ procesandoPago ? 'Cargando...' : 'Pagar Ahora' }}
                 </button>
                 
-                <span *ngIf="cuota.estatusPago === 'PAGADO'" class="text-success">
-                  <i class="bi bi-check-circle-fill"></i>
-                </span>
+             <div *ngIf="cuota.estatusPago === 'PAGADO'" class="d-flex flex-column align-items-center gap-1">
+              <span class="text-success small fw-bold">
+                <i class="bi bi-check-circle-fill"></i> Pagado
+              </span>
+              <button 
+                class="btn btn-outline-danger btn-xs py-0 px-2 shadow-sm"
+                style="font-size: 0.75rem;"
+                (click)="descargarPdf(cuota.pagoId)">
+                <i class="bi bi-file-earmark-pdf"></i> Recibo
+              </button>
+            </div>
               </td>
             </tr>
           </tbody>

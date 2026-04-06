@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CreditoService, Credito } from '../../services/credito';
 import { AuthService } from '../../services/auth';
 import { ActivatedRoute } from '@angular/router';
+import { saveAs } from 'file-saver'; // Opcional, o usa el método nativo abajo
 
 @Component({
   selector: 'app-creditos',
@@ -38,6 +39,26 @@ export class Creditos implements OnInit {
       error: (err) => console.error("Error al cargar la tabla de amortización:", err)
     });
   }
+
+descargarPdf(pagoId: number) {
+  // 1. Llamamos a la función que ya tienes definida abajo en este mismo archivo
+  this.descargarComprobante(pagoId).subscribe({
+    next: (res: any) => {
+      // 2. Extraemos el cuerpo (blob) de la respuesta
+      const blob = new Blob([res.body], { type: 'application/pdf' });
+      
+      // 3. Usamos saveAs que importaste arriba para disparar la descarga limpia
+      const nombreArchivo = `Recibo_Pago_${pagoId}.pdf`;
+      saveAs(blob, nombreArchivo);
+      
+      console.log('Descarga exitosa del pago:', pagoId);
+    },
+    error: (err) => {
+      console.error("Error al descargar el PDF", err);
+      alert("No se pudo descargar el comprobante. Es posible que el archivo físico no exista en el servidor o la ruta sea incorrecta.");
+    }
+  });
+}
 
   regresarAlListado() {
     this.mostrarTabla = false;
@@ -78,6 +99,16 @@ constructor(
     }
   });
   }
+
+
+  descargarComprobante(pagoId: number) {
+  const url = `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/pagos/comprobante/${pagoId}`;
+  
+  return this.http.get(url, {
+    responseType: 'blob', // <--- CRUCIAL para archivos
+    observe: 'response'   // Para poder leer los headers si fuera necesario
+  });
+}
 
 cargarCreditos() {
   const user = this.authService.getUsuarioActual();
