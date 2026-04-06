@@ -77,7 +77,7 @@ cargarCreditos() {
   
   // Si es cliente, agregamos el parámetro de filtro
   if (this.authService.isCliente()) {
-    url += `?usuarioId=${user.id}`; // Asegúrate de que el objeto user tenga el campo 'id'
+    url += `?usuarioId=${user.idUsuario}`; // Asegúrate de que el objeto user tenga el campo 'id'
   }
 
   this.http.get<any[]>(url).subscribe({
