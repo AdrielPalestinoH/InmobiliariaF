@@ -17,6 +17,32 @@ export class Creditos implements OnInit {
   inmuebles: any[] = [];
   mostrarFormulario = false;
 
+  // Agrega estas variables a tu clase
+  mostrarTabla: boolean = false;
+  cuotas: any[] = [];
+  creditoSeleccionado: any = null;
+
+  // Método para cargar la tabla
+  verDetalle(credito: any) {
+    this.creditoSeleccionado = credito;
+    const url = `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/${credito.id}/tabla`;
+    
+    this.http.get<any[]>(url).subscribe({
+      next: (data) => {
+        this.cuotas = data;
+        this.mostrarTabla = true; // Oculta el listado y muestra la tabla
+        this.mostrarFormulario = false;
+      },
+      error: (err) => console.error("Error al cargar la tabla de amortización:", err)
+    });
+  }
+
+  regresarAlListado() {
+    this.mostrarTabla = false;
+    this.cuotas = [];
+    this.creditoSeleccionado = null;
+  }
+
   // Objeto 'nuevo' adaptado al JSON de Azure
   nuevo: any = {
     usuarioId: null,
