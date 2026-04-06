@@ -72,6 +72,7 @@ constructor(
 
 cargarCreditos() {
   const user = this.authService.getUsuarioActual();
+  console.log("Usuario actual en créditos:", user); // 👈 Revisa esto en la consola para ver cómo se llama el ID
   let url = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos';
   
   // Si es cliente, agregamos el parámetro de filtro
