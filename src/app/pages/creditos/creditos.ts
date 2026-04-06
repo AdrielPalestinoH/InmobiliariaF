@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CreditoService, Credito } from '../../services/credito';
 import { AuthService } from '../../services/auth';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-creditos',
@@ -62,12 +63,20 @@ export class Creditos implements OnInit {
 constructor(
   public authService: AuthService, // 👈 Public para que el HTML lo use
   private http: HttpClient,
+  private route: ActivatedRoute // 👈 Inyecta esto
   // ... otros servicios
 ) {}
 
   ngOnInit() {
     this.cargarCreditos();
     this.cargarCatalogos();
+    this.route.queryParams.subscribe(params => {
+    if (params['pago'] === 'exito') {
+      alert('¡Gracias! Tu pago ha sido procesado correctamente. Actualizando tu estado de cuenta...');
+      // Puedes llamar a cargarCreditos() de nuevo para ver la cuota como PAGADA
+      this.cargarCreditos();
+    }
+  });
   }
 
 cargarCreditos() {
@@ -103,6 +112,35 @@ cargarCatalogos() {
   this.http.get<any[]>(`${baseUrlV1}/inmuebles`).subscribe(data => this.inmuebles = data);
 }
 
+
+// 1. Agrega esta variable al inicio de la clase
+procesandoPago = false;
+
+// 2. Agrega la función de pago
+pagarConPaypal(creditoId: number) {
+  this.procesandoPago = true;
+  const urlCrearPago = `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/pagos/crear/${creditoId}`;
+
+  console.log("Iniciando pago para crédito:", creditoId);
+
+  this.http.post<any>(urlCrearPago, {}).subscribe({
+    next: (res) => {
+      if (res && res.url) {
+        console.log("Redirigiendo a PayPal:", res.url);
+        // Redirección externa al sitio de PayPal
+        window.location.href = res.url;
+      } else {
+        alert("El servidor no devolvió una URL de PayPal válida.");
+        this.procesandoPago = false;
+      }
+    },
+    error: (err) => {
+      console.error("Error al crear orden de PayPal:", err);
+      alert("Hubo un error al conectar con PayPal. Intenta de nuevo.");
+      this.procesandoPago = false;
+    }
+  });
+}
 
 guardar() {
   const payload = {

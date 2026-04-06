@@ -235,6 +235,7 @@
             <th>Monto Crédito</th>
             <th>Plazo / Tasa</th>
             <th class="text-end pe-4">Acciones</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -336,6 +337,7 @@
               <th>Interés</th>
               <th>Saldo Pendiente</th>
               <th class="text-center">Estado</th>
+              <th *ngIf="authService.isCliente()" class="text-center">Acción</th>
             </tr>
           </thead>
           <tbody>
@@ -350,6 +352,20 @@
                 <span class="badge rounded-pill" 
                   [ngClass]="{'bg-success': cuota.estatusPago === 'PAGADO', 'bg-warning text-dark': cuota.estatusPago === 'PENDIENTE', 'bg-danger': cuota.estatusPago === 'VENCIDO'}">
                   {{ cuota.estatusPago }}
+                </span>
+              </td>
+              <td *ngIf="authService.isCliente()" class="text-center">
+                <button 
+                  *ngIf="cuota.estatusPago === 'PENDIENTE'"
+                  class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm"
+                  (click)="pagarConPaypal(creditoSeleccionado.id)"
+                  [disabled]="procesandoPago">
+                  <i class="bi bi-paypal me-1"></i> 
+                  {{ procesandoPago ? 'Cargando...' : 'Pagar Ahora' }}
+                </button>
+                
+                <span *ngIf="cuota.estatusPago === 'PAGADO'" class="text-success">
+                  <i class="bi bi-check-circle-fill"></i>
                 </span>
               </td>
             </tr>
