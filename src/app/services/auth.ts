@@ -30,13 +30,13 @@ export class AuthService {
     return data ? JSON.parse(data) : null;
   }
 
-  isAdmin(): boolean {
-    const u = this.getUsuarioActual();
-    return u && u.tipoUsuarioId === 1;
-  }
+isAdmin(): boolean {
+  const u = this.getUsuarioActual();
+  return u && u.rol === 'ADMIN';
+}
 
-  isCliente(): boolean {
-    const u = this.getUsuarioActual();
-    return u && u.tipoUsuarioId === 2;
-  }
+isCliente(): boolean {
+  const u = this.getUsuarioActual();
+  return u && u.rol === 'CLIENTE';
+}
 }

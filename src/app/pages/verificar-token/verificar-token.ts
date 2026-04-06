@@ -9,6 +9,7 @@ import { AuthService } from "../../services/auth";
              </div>`,
 })
 export class VerificarTokenComponent implements OnInit {
+  private validando = false; // 👈 Candado para evitar doble petición
 
   constructor(
     private route: ActivatedRoute,
@@ -19,33 +20,35 @@ export class VerificarTokenComponent implements OnInit {
   ngOnInit() {
     const token = this.route.snapshot.queryParamMap.get("token");
 
-    console.log("TOKEN:", token);
+    if (!token || this.validando) return; // 👈 Si ya está validando, no hagas nada
 
-    if (!token) {
-      this.router.navigate(["/login"]);
-      return;
-    }
+    this.validando = true; // 👈 Bloqueamos futuras peticiones
+    console.log("Iniciando validación de TOKEN:", token);
 
     this.authService.verificarToken(token).subscribe({
       next: (resp: any) => {
-        console.log("LOGIN OK:", resp);
-
-        // guardar sesión
+        // ... (tu lógica de guardar en localStorage)
         localStorage.setItem("token", resp.token);
-
-       console.log("TOKEN GUARDADO:", localStorage.getItem("token"));
         localStorage.setItem("usuario", JSON.stringify(resp));
 
-        // 🔥 redirección por rol
+        console.log("LOGIN EXITOSO, REDIRECCIONANDO...");
+        
+        // Usa el campo 'rol' que viene del backend
         if (resp.rol === "ADMIN") {
           this.router.navigate(["/dashboard"]);
         } else {
-          this.router.navigate(["/mispagos"]);
+          this.router.navigate(["/catalogo"]); // Sugerencia: llevar al cliente al catálogo
         }
       },
       error: (err) => {
-         console.log("🔥 ERROR TOKEN COMPLETO:", err);
-  this.router.navigate(["/login"]);
+        console.error("🔥 ERROR AL VERIFICAR:", err);
+        // Si el error dice "ya fue utilizado" pero ya tenemos un usuario en localStorage, 
+        // quizá fue que la primera petición sí entró. 
+        if (localStorage.getItem("usuario")) {
+           this.router.navigate(["/dashboard"]);
+        } else {
+           this.router.navigate(["/login"]);
+        }
       },
     });
   }
