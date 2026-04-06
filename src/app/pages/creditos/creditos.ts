@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf, DatePipe, CurrencyPipe } from '@angular/common';
+import { NgFor, NgIf, DatePipe, CurrencyPipe,NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CreditoService, Credito } from '../../services/credito';
@@ -7,7 +7,7 @@ import { CreditoService, Credito } from '../../services/credito';
 @Component({
   selector: 'app-creditos',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, DatePipe, CurrencyPipe],
+  imports: [NgFor, NgIf, FormsModule, DatePipe, CurrencyPipe,NgClass],
   templateUrl: './creditos.html',
   styleUrls: ['./creditos.scss']
 })
