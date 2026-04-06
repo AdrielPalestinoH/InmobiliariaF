@@ -349,7 +349,7 @@
               <td>{{ cuota.interesOrdinario | currency }}</td>
               <td class="text-muted">{{ cuota.saldoPendiente | currency }}</td>
               <td class="text-center">
-                <span class="badge rounded-pill" 
+                <span class="badge rounded-pill text-dark" 
                   [ngClass]="{'bg-success': cuota.estatusPago === 'PAGADO', 'bg-warning text-dark': cuota.estatusPago === 'PENDIENTE', 'bg-danger': cuota.estatusPago === 'VENCIDO'}">
                   {{ cuota.estatusPago }}
                 </span>
@@ -364,7 +364,7 @@
                   {{ procesandoPago ? 'Cargando...' : 'Pagar Ahora' }}
                 </button>
                 
-             <div *ngIf="cuota.estatusPago === 'PAGADO'" class="d-flex flex-column align-items-center gap-1">
+             <div *ngIf="cuota.estatusPago === 'PAGADA'" class="d-flex flex-column align-items-center gap-1">
               <span class="text-success small fw-bold">
                 <i class="bi bi-check-circle-fill"></i> Pagado
               </span>
