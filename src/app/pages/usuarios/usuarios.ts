@@ -1,32 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
-import { UsuarioService, Usuario } from '../../services/usuario';
+import { UsuarioService } from '../../services/usuario';
 import { CatalogoUsuario, TipoUsuario } from '../../services/catalogo-usuario';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
   imports: [FormsModule, NgFor, NgIf],
-  templateUrl: './usuarios.html',
-  styleUrls: ['./usuarios.scss']
+  templateUrl: './usuarios.html'
 })
 export class Usuarios implements OnInit {
-  usuarios: Usuario[] = [];
-  tipos: TipoUsuario[] = [];
+  // Ajusta esta URL a tu API en Azure
+  private readonly API_AZURE = 'https://tu-api-inmobiliaria.azurewebsites.net/api/v1';
 
-  nuevo: Partial<Usuario> = {
-    nombre: '',
+  usuarios: any[] = [];
+  tipos: TipoUsuario[] = [];
+  asentamientos: any[] = [];
+  
+  municipioNombre: string = '';
+  estadoNombre: string = '';
+
+  nuevo: any = {
+    nombres: '',
     apellidos: '',
     email: '',
-    cel: ''
+    telefono: '',
+    codigoPostal: '',
+    calle: '',
+    numeroExterior: '',
+    numeroInterior: '',
+    idAsentamiento: null
   };
 
   tipoId: number | null = null;
 
   constructor(
     private usuarioService: UsuarioService,
-    private catalogoUsuarioService: CatalogoUsuario
+    private catalogoUsuarioService: CatalogoUsuario,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -34,48 +47,65 @@ export class Usuarios implements OnInit {
     this.cargarRoles();
   }
 
-  cargarRoles() {
-    this.catalogoUsuarioService.listarTipos().subscribe({
-      next: (data) => {
-        this.tipos = data;
-      },
-      error: (err) => console.error('Error al cargar roles', err)
-    });
-  }
-
-  cargarUsuarios() {
-    this.usuarioService.listar().subscribe({
-      next: (data) => {
-        this.usuarios = data;
-      },
-      error: (err) => console.error('Error al listar usuarios', err)
-    });
+  // --- BUSCADOR DE CP ---
+  buscarDireccion() {
+    if (this.nuevo.codigoPostal?.length === 5) {
+      this.http.get<any[]>(`${this.API_AZURE}/catalogos/cp/${this.nuevo.codigoPostal}`).subscribe({
+        next: (data) => {
+          this.asentamientos = data;
+          if (data.length > 0) {
+            this.municipioNombre = data[0].municipio.nombre;
+            this.estadoNombre = data[0].municipio.estado.nombre;
+          }
+        },
+        error: (err) => {
+          console.error('Error al buscar CP', err);
+          this.asentamientos = [];
+        }
+      });
+    }
   }
 
   guardar() {
-    if (!this.tipoId) {
-      alert('Debe seleccionar un tipo de usuario');
-      return;
-    }
-
-    // Usamos 'any' para evitar conflictos con la interfaz Usuario estricta
-    const dto: any = { 
-      ...this.nuevo, 
-      tipoUsuarioId: this.tipoId 
+    // Mapeamos al UsuarioDTO que espera tu Controller de Java
+    const usuarioDTO = {
+      nombres: this.nuevo.nombres,
+      apellidos: this.nuevo.apellidos,
+      email: this.nuevo.email,
+      telefono: this.nuevo.telefono,
+      role: this.tipos.find(t => t.id_tipo_usuario === this.tipoId)?.role,
+      direccion: { // Esto llena los campos de calle, cp, etc. en el back
+        calle: this.nuevo.calle,
+        codigoPostal: this.nuevo.codigoPostal,
+        numeroExterior: this.nuevo.numeroExterior,
+        numeroInterior: this.nuevo.numeroInterior,
+        idAsentamiento: this.nuevo.idAsentamiento
+      }
     };
 
-    this.usuarioService.crear(dto).subscribe({
+    this.http.post(`${this.API_AZURE}/registro`, usuarioDTO).subscribe({
       next: () => {
-        alert('Usuario creado con éxito');
+        alert('Usuario registrado con éxito en Azure');
         this.cargarUsuarios();
-        // Reset del formulario
-        this.nuevo = { nombre: '', apellidos: '', email: '', cel: '' };
-        this.tipoId = null;
+        this.resetForm();
       },
-      error: (err) => {
-        console.error(err);
-        alert('Error al guardar el usuario');
-      }
+      error: (err) => alert('Error al registrar: ' + (err.error?.mensaje || 'Error interno'))
     });
+  }
+
+  cargarRoles() {
+    this.catalogoUsuarioService.listarTipos().subscribe(data => this.tipos = data);
+  }
+
+  cargarUsuarios() {
+    this.usuarioService.listar().subscribe(data => this.usuarios = data);
+  }
+
+  resetForm() {
+    this.nuevo = { nombres: '', apellidos: '', email: '', telefono: '', codigoPostal: '', calle: '', numeroExterior: '', numeroInterior: '', idAsentamiento: null };
+    this.municipioNombre = '';
+    this.estadoNombre = '';
+    this.asentamientos = [];
+    this.tipoId = null;
   }
 }

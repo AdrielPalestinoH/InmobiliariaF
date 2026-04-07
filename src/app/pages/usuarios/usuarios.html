@@ -1,53 +1,76 @@
 <div class="container mt-4">
-  <h2>Gestión de Usuarios</h2>
+  <h2 class="mb-4">Registro de Usuario/Cliente</h2>
 
-  <form (ngSubmit)="guardar()" #f="ngForm" class="card p-4 mb-4 shadow-sm">
+  <form (ngSubmit)="guardar()" #f="ngForm" class="card p-4 shadow-sm border-0 bg-light">
     <div class="row">
-      <div class="col-md-6 mb-3">
-        <label>Nombre</label>
-        <input class="form-control" [(ngModel)]="nuevo.nombre" name="nombre" required>
+      <div class="col-md-4 mb-3">
+        <label>Nombre(s)</label>
+        <input class="form-control" [(ngModel)]="nuevo.nombres" name="nombres" required>
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-md-4 mb-3">
         <label>Apellidos</label>
         <input class="form-control" [(ngModel)]="nuevo.apellidos" name="apellidos" required>
       </div>
+      <div class="col-md-4 mb-3">
+        <label>Celular</label>
+        <input class="form-control" [(ngModel)]="nuevo.telefono" name="telefono" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" [(ngModel)]="nuevo.email" name="email" required>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Rol</label>
+        <select class="form-select" [(ngModel)]="tipoId" name="tipoId" required>
+          <option [ngValue]="null">Seleccione rol...</option>
+          <option *ngFor="let t of tipos" [ngValue]="t.id_tipo_usuario">{{ t.role }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mt-3 border-top pt-3">
+      <div class="col-md-3 mb-3">
+        <label class="fw-bold">CP</label>
+        <input class="form-control border-primary" [(ngModel)]="nuevo.codigoPostal" 
+               name="codigoPostal" (input)="buscarDireccion()" maxlength="5" required>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Estado</label>
+        <input class="form-control bg-white" [value]="estadoNombre" readonly placeholder="...">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Municipio</label>
+        <input class="form-control bg-white" [value]="municipioNombre" readonly placeholder="...">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Colonia</label>
+        <select class="form-select" [(ngModel)]="nuevo.idAsentamiento" name="idAsentamiento" required>
+          <option [ngValue]="null">Seleccione...</option>
+          <option *ngFor="let a of asentamientos" [ngValue]="a.id">{{ a.nombreColonia }}</option>
+        </select>
+      </div>
     </div>
 
     <div class="row">
       <div class="col-md-6 mb-3">
-        <label>Email</label>
-        <input type="email" class="form-control" [(ngModel)]="nuevo.email" name="email" required>
+        <label>Calle</label>
+        <input class="form-control" [(ngModel)]="nuevo.calle" name="calle" required>
       </div>
-      <div class="col-md-6 mb-3">
-        <label>Celular</label>
-        <input class="form-control" [(ngModel)]="nuevo.cel" name="cel" required>
+      <div class="col-md-3 mb-3">
+        <label>Num. Ext</label>
+        <input class="form-control" [(ngModel)]="nuevo.numeroExterior" name="numeroExterior" required>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label>Num. Int</label>
+        <input class="form-control" [(ngModel)]="nuevo.numeroInterior" name="numeroInterior">
       </div>
     </div>
 
-    <div class="mb-3">
-      <label>Tipo de Usuario</label>
-      <select class="form-select" [(ngModel)]="tipoId" name="tipoId" required>
-        <option [ngValue]="null" disabled>Seleccione un rol...</option>
-        <option *ngFor="let t of tipos" [ngValue]="t.id_tipo_usuario">
-          {{ t.role }}
-        </option>
-      </select>
-    </div>
-
-    <button class="btn btn-success w-100" type="submit" [disabled]="f.invalid">
-      <i class="bi bi-person-plus-fill"></i> Guardar Usuario
+    <button class="btn btn-primary w-100 py-2 mt-3" type="submit" [disabled]="f.invalid || !nuevo.idAsentamiento">
+      <i class="bi bi-cloud-check"></i> Registrar Usuario en Producción
     </button>
   </form>
-
-  <h3>Lista de Usuarios</h3> 
-  <ul class="list-group shadow-sm">
-    <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let u of usuarios">
-      <div>
-        <strong>{{ u.nombre }} {{ u.apellidos }}</strong>
-        <br>
-        <small class="text-muted">{{ u.email }}</small>
-      </div>
-      <span class="badge bg-primary rounded-pill">{{ u.tipoUsuarioDescripcion }}</span>
-    </li>
-  </ul>
 </div>
