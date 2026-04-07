@@ -41,23 +41,27 @@ export class Creditos implements OnInit {
     });
   }
 
-descargarPdf(pagoId: number) {
-  // 1. Llamamos a la función que ya tienes definida abajo en este mismo archivo
-  this.descargarComprobante(pagoId).subscribe({
+// Cambiamos la firma para recibir creditoId y nroCuota
+descargarPdf(creditoId: number, nroCuota: number) {
+  this.descargarComprobantePorCuota(creditoId, nroCuota).subscribe({
     next: (res: any) => {
-      // 2. Extraemos el cuerpo (blob) de la respuesta
       const blob = new Blob([res.body], { type: 'application/pdf' });
-      
-      // 3. Usamos saveAs que importaste arriba para disparar la descarga limpia
-      const nombreArchivo = `Recibo_Pago_${pagoId}.pdf`;
+      const nombreArchivo = `Recibo_Credito${creditoId}_Cuota${nroCuota}.pdf`;
       saveAs(blob, nombreArchivo);
-      
-      console.log('Descarga exitosa del pago:', pagoId);
     },
     error: (err) => {
-      console.error("Error al descargar el PDF", err);
-      alert("No se pudo descargar el comprobante. Es posible que el archivo físico no exista en el servidor o la ruta sea incorrecta.");
+      console.error("Error", err);
+      alert("No se encontró el recibo para esta cuota específica.");
     }
+  });
+}
+
+// Nueva función de llamada al API
+descargarComprobantePorCuota(creditoId: number, nroCuota: number) {
+  const url = `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/pagos/comprobante/credito/${creditoId}/cuota/${nroCuota}`;
+  return this.http.get(url, {
+    responseType: 'blob',
+    observe: 'response'
   });
 }
 
