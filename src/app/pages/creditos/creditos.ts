@@ -32,6 +32,7 @@ export class Creditos implements OnInit {
     
     this.http.get<any[]>(url).subscribe({
       next: (data) => {
+        console.log("cuotas recibidas:", data); // Revisa esto en la consola para ver qué llega
         this.cuotas = data;
         this.mostrarTabla = true; // Oculta el listado y muestra la tabla
         this.mostrarFormulario = false;
