@@ -34,8 +34,9 @@ listar(): Observable<Usuario[]> {
     return this.http.post<Usuario>(`${this.baseUrl}/registro`, usuario);
   }
 
-actualizar(id: number, usuario: Usuario): Observable<any> {
-  // Asegúrate de que la ruta coincida con el Controller
-  return this.http.put(`${this.baseUrl}/usuarios/${id}`, usuario);
-}
+  actualizar(id: number, usuario: Usuario): Observable<any> {
+    // Al quitar '/usuarios/', la URL quedará: .../api/v1/usuarios/{id}
+    // Que es exactamente lo que espera tu @PutMapping("/{id}")
+    return this.http.put(`${this.baseUrl}/${id}`, usuario);
+  }
 }
