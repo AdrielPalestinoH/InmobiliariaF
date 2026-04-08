@@ -82,9 +82,27 @@ export class InmuebleService {
   }
 
   // En inmueble.ts
-  actualizar(id: number, inmueble: Inmueble): Observable<Inmueble> {
-    return this.http.put<Inmueble>(`${this.apiUrl}/${id}`, inmueble);
+// En InmuebleService (inmueble.ts)
+actualizar(id: number, inmueble: any, files: File[]): Observable<any> {
+  const formData = new FormData();
+
+  formData.append('inmueble', new Blob([JSON.stringify(inmueble)], {
+    type: 'application/json'
+  }));
+
+  // Las fotos son opcionales en la edición
+  if (files && files.length > 0) {
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+  } else {
+    // Enviamos un array vacío para que el backend no truene si espera el RequestPart
+    formData.append('files', new Blob([], { type: 'application/octet-stream' }));
   }
+
+  // IMPORTANTE: Cambiamos la URL para que coincida con el nuevo controlador
+  return this.http.post(`${this.apiUrl}/${id}/actualizar`, formData);
+}
 
   // inmueble.service.ts (el real)
 

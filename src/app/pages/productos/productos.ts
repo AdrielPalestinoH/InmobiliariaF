@@ -83,7 +83,7 @@ quitarFoto(index: number) {
     // Si es edición, podrías decidir si mandas fotos o no. 
     // Para la demo, enfoquémonos en el "Crear" (nuevo inmueble) con fotos.
     const accion = this.modoEdicion
-      ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual)
+      ? this.inmuebleService.actualizar(this.inmuebleActual.id!, this.inmuebleActual, this.selectedFiles)
       : this.inmuebleService.crearInmueble(this.inmuebleActual, this.selectedFiles); // 👈 Pasamos selectedFiles
 
     accion.subscribe({
