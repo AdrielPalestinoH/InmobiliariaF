@@ -297,13 +297,25 @@
 
   <form (ngSubmit)="guardar()">
     <div class="row">
-      <div class="col-md-6 mb-3">
-        <label class="form-label fw-bold">ID del Cliente (Usuario)</label>
-        <input type="number" class="form-control" [(ngModel)]="nuevoCreditoDTO.usuarioId" name="usuarioId" required placeholder="Ej. 105">
+<div class="col-md-6 mb-3">
+        <label class="form-label fw-bold">Seleccionar Cliente</label>
+        <select class="form-select border-primary" [(ngModel)]="nuevoCreditoDTO.usuarioId" name="usuarioId" required>
+          <option [ngValue]="null" disabled>-- Seleccione un cliente --</option>
+          <option *ngFor="let c of clientes" [ngValue]="c.id">
+            {{ c.nombres }} {{ c.apellidos }} ({{ c.email }})
+          </option>
+        </select>
+        <div class="form-text" *ngIf="clientes.length === 0">Cargando catálogo...</div>
       </div>
+
       <div class="col-md-6 mb-3">
-        <label class="form-label fw-bold">ID del Inmueble</label>
-        <input type="number" class="form-control" [(ngModel)]="nuevoCreditoDTO.inmuebleId" name="inmuebleId" required placeholder="Ej. 42">
+        <label class="form-label fw-bold">Seleccionar Inmueble</label>
+        <select class="form-select border-primary" [(ngModel)]="nuevoCreditoDTO.inmuebleId" name="inmuebleId" required>
+          <option [ngValue]="null" disabled>-- Seleccione una propiedad --</option>
+          <option *ngFor="let i of inmuebles" [ngValue]="i.id">
+            {{ i.titulo }} - {{ i.precio | currency }}
+          </option>
+        </select>
       </div>
 
       <div class="col-md-4 mb-3">

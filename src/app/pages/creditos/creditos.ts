@@ -7,6 +7,9 @@ import { AuthService } from '../../services/auth';
 import { ActivatedRoute } from '@angular/router';
 import { saveAs } from 'file-saver'; // Opcional, o usa el método nativo abajo
 
+import { UsuarioService } from '../../services/usuario';
+import { InmuebleService } from '../../services/inmueble';
+
 @Component({
   selector: 'app-creditos',
   standalone: true,
@@ -87,7 +90,9 @@ nuevoCreditoDTO: any = {
 constructor(
   public authService: AuthService, // 👈 Public para que el HTML lo use
   private http: HttpClient,
-  private route: ActivatedRoute // 👈 Inyecta esto
+  private route: ActivatedRoute,// 👈 Inyecta esto,
+  private usuarioService: UsuarioService,   // 👈 Inyectamos tus servicios
+    private inmuebleService: InmuebleService
   // ... otros servicios
 ) {}
 
@@ -180,8 +185,8 @@ guardar() {
   // Creamos una copia limpia para enviar
   const payload = {
     ...this.nuevoCreditoDTO,
-    usuarioId: Number(this.nuevoCreditoDTO.usuarioId),
-    inmuebleId: Number(this.nuevoCreditoDTO.inmuebleId),
+   usuarioId: Number(this.nuevoCreditoDTO.usuarioId),
+      inmuebleId: Number(this.nuevoCreditoDTO.inmuebleId),
     montoCredito: Number(this.nuevoCreditoDTO.montoCredito),
     montoEnganche: Number(this.nuevoCreditoDTO.montoEnganche)
   };
