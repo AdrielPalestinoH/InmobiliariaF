@@ -87,7 +87,7 @@ buscarDireccion() {
     idAsentamiento: this.nuevo.idAsentamiento
   };
 
-    this.http.post(`${this.API_AZURE}/registro`, usuarioDTO).subscribe({
+    this.http.post(`${this.API_AZURE}/usuarios/registro`, usuarioDTO).subscribe({
       next: () => {
         alert('Usuario registrado con éxito en Azure');
         this.cargarUsuarios();
