@@ -34,9 +34,8 @@ listar(): Observable<Usuario[]> {
     return this.http.post<Usuario>(`${this.baseUrl}/registro`, usuario);
   }
 
-  actualizar(id: number, usuario: Usuario): Observable<Usuario> {
-    // Si no tienes PUT en el controller todavía, dará 405, pero esta es la ruta estándar
-    return this.http.put<Usuario>(`${this.baseUrl}/${id}`, usuario);
-  }
-
+actualizar(id: number, usuario: Usuario): Observable<any> {
+  // Asegúrate de que la ruta coincida con el Controller
+  return this.http.put(`${this.baseUrl}/usuarios/${id}`, usuario);
+}
 }
