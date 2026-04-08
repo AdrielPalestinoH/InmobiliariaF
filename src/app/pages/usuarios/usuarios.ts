@@ -9,11 +9,12 @@ import { HttpClient } from '@angular/common/http';
   selector: 'app-usuarios',
   standalone: true,
   imports: [FormsModule, NgFor, NgIf],
-  templateUrl: './usuarios.html'
+  templateUrl: './usuarios.html',
+  styleUrls: ["./usuarios.scss"],
 })
 export class Usuarios implements OnInit {
   // Ajusta esta URL a tu API en Azure
-  private readonly API_AZURE = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
+  private readonly API_AZURE = 'https://https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
 
   usuarios: any[] = [];
   tipos: TipoUsuario[] = [];
