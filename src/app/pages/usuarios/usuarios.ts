@@ -3,7 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { UsuarioService } from '../../services/usuario';
 import { CatalogoUsuario, TipoUsuario } from '../../services/catalogo-usuario';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
+
 
 @Component({
   selector: 'app-usuarios',
@@ -49,22 +50,26 @@ export class Usuarios implements OnInit {
   }
 
   // --- BUSCADOR DE CP ---
-  buscarDireccion() {
-    if (this.nuevo.codigoPostal?.length === 5) {
-      this.http.get<any[]>(`${this.API_AZURE}/catalogos/cp/${this.nuevo.codigoPostal}`).subscribe({
-        next: (data) => {
-          this.asentamientos = data;
-          if (data.length > 0) {
-            this.municipioNombre = data[0].municipio.nombre;
-            this.estadoNombre = data[0].municipio.estado.nombre;
-          }
-        },
-        error: (err) => {
-          console.error('Error al buscar CP', err);
-          this.asentamientos = [];
+buscarDireccion() {
+  if (this.nuevo.codigoPostal?.length === 5) {
+    // Definimos los headers para forzar JSON
+    const headers = new HttpHeaders().set('Accept', 'application/json');
+
+    this.http.get<any[]>(`${this.API_AZURE}/catalogos/cp/${this.nuevo.codigoPostal}`, { headers }).subscribe({
+      next: (data) => {
+        // Al forzar el header, 'data' ya debería ser un array de objetos JS
+        this.asentamientos = data;
+        if (data && data.length > 0) {
+          this.municipioNombre = data[0].municipio.nombre;
+          this.estadoNombre = data[0].municipio.estado.nombre;
         }
-      });
-    }
+      },
+      error: (err) => {
+        console.error('Error al buscar CP', err);
+        this.asentamientos = [];
+      }
+    });
+  }
   }
 
   guardar() {
