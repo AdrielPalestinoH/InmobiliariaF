@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class Usuarios implements OnInit {
   // Ajusta esta URL a tu API en Azure
-  private readonly API_AZURE = 'https://tu-api-inmobiliaria.azurewebsites.net/api/v1';
+  private readonly API_AZURE = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1';
 
   usuarios: any[] = [];
   tipos: TipoUsuario[] = [];
