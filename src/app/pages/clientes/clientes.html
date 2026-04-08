@@ -12,72 +12,65 @@
       {{ modoEdicion ? 'Editar Cliente' : 'Nuevo Cliente' }}
     </h5>
 
-    <form (ngSubmit)="guardarCliente()" #f="ngForm">
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
-          <input
-            class="form-control"
-            placeholder="Ej. Juan"
-            [(ngModel)]="clienteActual.nombre"
-            name="nombre"
-            #nombre="ngModel"
-            [class.is-invalid]="nombre.invalid && nombre.touched"
-            required
-          />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label fw-semibold">Apellidos</label>
-          <input
-            class="form-control"
-            placeholder="Ej. Pérez"
-            [(ngModel)]="clienteActual.apellidos"
-            name="apellidos"
-          />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-          <input
-            type="email"
-            class="form-control"
-            placeholder="juan@correo.com"
-            [(ngModel)]="clienteActual.email"
-            name="email"
-            #email="ngModel"
-            [class.is-invalid]="email.invalid && email.touched"
-            required
-            email
-          />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label fw-semibold">Teléfono</label>
-          <input
-            class="form-control"
-            placeholder="10 dígitos"
-            [(ngModel)]="clienteActual.cel"
-            name="cel"
-          />
-        </div>
-      </div>
+<form (ngSubmit)="guardarCliente()" #f="ngForm">
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Nombre(s)</label>
+      <input class="form-control" [(ngModel)]="clienteActual.nombres" name="nombres" required />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Apellidos</label>
+      <input class="form-control" [(ngModel)]="clienteActual.apellidos" name="apellidos" required />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Rol / Tipo</label>
+      <select class="form-select" [(ngModel)]="clienteActual.role" name="role" required>
+        <option value="CLIENTE">CLIENTE</option>
+        <option value="ADMIN">ADMINISTRADOR</option>
+        <option value="ASESOR">ASESOR</option>
+        <option value="AGENTE">AGENTE</option>
+      </select>
+    </div>
+  </div>
 
-      <div class="d-flex justify-content-end gap-2 mt-3">
-        <button
-          class="btn btn-success"
-          type="submit"
-          [disabled]="f.invalid"
-        >
-          <i class="bi bi-check-lg"></i>
-          {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="mostrarFormulario = false"
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Email</label>
+      <input type="email" class="form-control" [(ngModel)]="clienteActual.email" name="email" required [disabled]="modoEdicion" />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Teléfono</label>
+      <input class="form-control" [(ngModel)]="clienteActual.telefono" name="telefono" required />
+    </div>
+  </div>
+
+  <div class="row border-top pt-3 mt-2">
+    <h6 class="text-muted mb-3">Dirección del Cliente</h6>
+    <div class="col-md-2 mb-3">
+      <label class="form-label">CP</label>
+      <input class="form-control" [(ngModel)]="clienteActual.codigoPostal" name="cp" maxlength="5" />
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Calle</label>
+      <input class="form-control" [(ngModel)]="clienteActual.calle" name="calle" />
+    </div>
+    <div class="col-md-3 mb-3">
+      <label class="form-label">Num. Ext</label>
+      <input class="form-control" [(ngModel)]="clienteActual.numeroExterior" name="numExt" />
+    </div>
+    <div class="col-md-3 mb-3">
+      <label class="form-label">Num. Int</label>
+      <input class="form-control" [(ngModel)]="clienteActual.numeroInterior" name="numInt" />
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button class="btn btn-success" type="submit" [disabled]="f.invalid">
+      <i class="bi bi-check-lg"></i> {{ modoEdicion ? 'Actualizar Cliente' : 'Guardar Cliente' }}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="mostrarFormulario = false">Cancelar</button>
+  </div>
+</form>
   </div>
 
   <div class="card p-3 mb-3 shadow-sm bg-light">

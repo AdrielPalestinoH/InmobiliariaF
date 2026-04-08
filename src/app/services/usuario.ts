@@ -6,12 +6,17 @@ import { Observable } from 'rxjs';
 
 export interface Usuario {
   id?: number;
-  nombre?: string;
-  apellidos?: string;
-  email?: string;
-  cel?: string;
-  tipoUsuarioDescripcion?: string;
-  tipoUsuarioId?: number; // 👈 agrega este campo
+  nombres: string;   // Antes era nombre
+  apellidos: string;
+  email: string;
+  telefono: string;  // Antes era cel
+  role?: string;     // Para manejar ADMIN, CLIENTE, etc.
+  // Campos de dirección planos:
+  codigoPostal?: string;
+  calle?: string;
+  numeroExterior?: string;
+  numeroInterior?: string;
+  idAsentamiento?: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -15,25 +15,10 @@ export class Clientes implements OnInit {
   clientes: Usuario[] = [];
   filtro = '';
   mostrarFormulario = false;
-
   modoEdicion = false;
+  tipos: any[] = []; // Para cargar los roles si fuera necesario
 
-  clienteActual: Usuario = {
-    id: undefined,
-    nombre: '',
-    apellidos: '',
-    email: '',
-    cel: '',
-    tipoUsuarioDescripcion: 'Cliente'
-  };
-
-  nuevoCliente: Usuario = {
-    nombre: '',
-    apellidos: '',
-    email: '',
-    cel: '',
-    tipoUsuarioDescripcion: 'Cliente'
-  };
+  clienteActual: Usuario = this.inicializarCliente();
 
   constructor(private usuarioService: UsuarioService) {}
 
@@ -41,74 +26,74 @@ export class Clientes implements OnInit {
     this.cargarClientes();
   }
 
+  inicializarCliente(): Usuario {
+    return {
+      nombres: '',
+      apellidos: '',
+      email: '',
+      telefono: '',
+      role: 'CLIENTE',
+      codigoPostal: '',
+      calle: '',
+      numeroExterior: '',
+      numeroInterior: '',
+      idAsentamiento: undefined
+    };
+  }
+
   cargarClientes() {
     this.usuarioService.listar().subscribe({
       next: (data) => (this.clientes = data),
-      error: (err) => console.error('Error al cargar clientes', err)
+      error: (err) => console.error('Error al cargar', err)
     });
+  }
+
+  editarCliente(c: Usuario) {
+    this.mostrarFormulario = true;
+    this.modoEdicion = true;
+    // Clonamos el objeto y nos aseguramos de mapear role si viene de la lista de tiposUsuario
+    this.clienteActual = { ...c };
+  }
+
+  nuevoClienteForm() {
+    this.mostrarFormulario = !this.mostrarFormulario;
+    this.modoEdicion = false;
+    this.clienteActual = this.inicializarCliente();
+  }
+
+  guardarCliente() {
+    if (this.modoEdicion) {
+      // Lógica de Actualizar (necesitas implementar 'actualizar' en tu service)
+      this.usuarioService.actualizar(this.clienteActual.id!, this.clienteActual).subscribe({
+        next: () => {
+          alert('Cliente actualizado con éxito ✅');
+          this.finalizarGuardado();
+        },
+        error: (err) => alert('Error al actualizar')
+      });
+    } else {
+      // Lógica de Crear
+      this.usuarioService.crear(this.clienteActual).subscribe({
+        next: () => {
+          alert('Cliente registrado y correo enviado ✅');
+          this.finalizarGuardado();
+        },
+        error: (err) => alert('Error al registrar')
+      });
+    }
+  }
+
+  finalizarGuardado() {
+    this.mostrarFormulario = false;
+    this.cargarClientes();
   }
 
   buscar() {
     const texto = this.filtro.toLowerCase();
-    return this.clientes.filter(c => {
-      const nombre = c.nombre ?? '';
-      const apellidos = c.apellidos ?? '';
-      const email = c.email ?? '';
-      return (
-        nombre.toLowerCase().includes(texto) ||
-        apellidos.toLowerCase().includes(texto) ||
-        email.toLowerCase().includes(texto)
-      );
-    });
+    return this.clientes.filter(c => 
+      (c.nombres?.toLowerCase().includes(texto)) || 
+      (c.apellidos?.toLowerCase().includes(texto)) || 
+      (c.email?.toLowerCase().includes(texto))
+    );
   }
-
-
-   editarCliente(c: Usuario) {
-    this.mostrarFormulario = true;
-    this.modoEdicion = true;
-    this.clienteActual = { ...c };
-  }
-
-   /** 👉 renamed to avoid conflict */
-  nuevoClienteForm() {
-    this.mostrarFormulario = true;
-    this.modoEdicion = false;
-    this.clienteActual = {
-      nombre: '',
-      apellidos: '',
-      email: '',
-      cel: '',
-      tipoUsuarioDescripcion: 'Cliente'
-    };
-  }
-
-
-guardarCliente() {
-  const usuarioParaEnviar = {
-    // Usamos los nombres que tu DTO/Entity esperan (basado en tus logs previos)
-    nombres: this.clienteActual.nombre,
-    apellidos: this.clienteActual.apellidos,
-    email: this.clienteActual.email,
-    telefono: this.clienteActual.cel,
-    // ESTO ES LO QUE ESTABA FALTANDO/FALLANDO:
-    role: 'CLIENTE' 
-  };
-
-  this.usuarioService.crear(usuarioParaEnviar).subscribe({
-    next: () => {
-      alert('Cliente registrado. Se envió correo de activación ✅');
-      this.finalizarGuardado();
-    },
-    error: (err) => {
-      console.error('Error al guardar', err);
-      alert('Error en el servidor. Revisa si el campo "role" llega al DTO.');
-    }
-  });
-}
-
-// Función auxiliar para limpiar
-finalizarGuardado() {
-  this.mostrarFormulario = false;
-  this.cargarClientes();
-}
 }
