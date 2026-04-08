@@ -72,19 +72,17 @@ descargarComprobantePorCuota(creditoId: number, nroCuota: number) {
   }
 
   // Objeto 'nuevo' adaptado al JSON de Azure
-  nuevo: any = {
-    usuarioId: null,
-    inmuebleId: null,
-    montoEnganche: 0,
-    montoCredito: 0,
-    comisionAperturaPct: 1.5,
-    tasaInteresAnualPct: 12.0,
-    tasaInteresMoratorioPct: 5.0,
-    plazoTotalMeses: 24,
-    diaPagoMensual: 15,
-    saldoInsolutoActual: 0,
-    fechaApertura: new Date().toISOString().substring(0, 10)
-  };
+nuevoCreditoDTO: any = {
+  montoEnganche: 0,
+  montoCredito: 0,
+  comisionAperturaPct: 1.5, // Un valor default común
+  tasaInteresAnualPct: 12.0,
+  tasaInteresMoratorioPct: 5.0,
+  plazoTotalMeses: 24,
+  diaPagoMensual: 1,
+  usuarioId: null,
+  inmuebleId: null
+};
 
 constructor(
   public authService: AuthService, // 👈 Public para que el HTML lo use
@@ -179,35 +177,30 @@ pagarConPaypal(creditoId: number) {
 }
 
 guardar() {
+  // Creamos una copia limpia para enviar
   const payload = {
-    usuarioId: Number(this.nuevo.usuarioId),
-    inmuebleId: Number(this.nuevo.inmuebleId),
-    montoEnganche: Number(this.nuevo.montoEnganche),
-    montoCredito: Number(this.nuevo.montoCredito),
-    comisionAperturaPct: Number(this.nuevo.comisionAperturaPct),
-    tasaInteresAnualPct: Number(this.nuevo.tasaInteresAnualPct),
-    tasaInteresMoratorioPct: Number(this.nuevo.tasaInteresMoratorioPct),
-    plazoTotalMeses: Number(this.nuevo.plazoTotalMeses),
-    diaPagoMensual: Number(this.nuevo.diaPagoMensual),
-    saldoInsolutoActual: Number(this.nuevo.montoCredito),
-    fechaApertura: new Date(this.nuevo.fechaApertura).toISOString()
+    ...this.nuevoCreditoDTO,
+    usuarioId: Number(this.nuevoCreditoDTO.usuarioId),
+    inmuebleId: Number(this.nuevoCreditoDTO.inmuebleId),
+    montoCredito: Number(this.nuevoCreditoDTO.montoCredito),
+    montoEnganche: Number(this.nuevoCreditoDTO.montoEnganche)
   };
 
-  const urlFinal = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear';
+  console.log('Enviando Crédito a Azure:', payload);
+  
+  const url = `https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/creditos/crear`;
 
-  this.http.post(urlFinal, payload, { responseType: 'text' }).subscribe({
-    next: () => {
+  this.http.post(url, payload).subscribe({
+    next: (res) => {
       this.procesarExito();
     },
     error: (err) => {
-      // ERR_CONNECTION_RESET a menudo llega como status 0 o 201 en la consola
-      // Si el log dice 201 (Created), el registro YA ESTÁ en la base de datos.
-      if (err.status === 201 || err.status === 200 || err.status === 0) {
-        console.warn("Se detectó un corte de conexión, pero el servidor marcó 201. Procesando como éxito.");
+      console.error(err);
+      // Tip: A veces Azure responde 201 pero Angular lo toma como error por el formato del body
+      if(err.status === 201) {
         this.procesarExito();
       } else {
-        console.error("❌ Error real:", err);
-        alert('Error al guardar. Revisa que el monto sea mayor a 0.');
+        alert('Error al crear crédito: ' + (err.error?.mensaje || 'Verifique IDs y montos'));
       }
     }
   });
@@ -219,22 +212,11 @@ procesarExito() {
   this.mostrarFormulario = false;
   this.cargarCreditos(); // Esto refrescará la lista y verás el nuevo crédito ahí
 }
-  nuevoCredito() {
-    this.nuevo = {
-      usuarioId: null,
-      inmuebleId: null,
-      montoEnganche: 0,
-      montoCredito: 0,
-      comisionAperturaPct: 1.5,
-      tasaInteresAnualPct: 12.0,
-      tasaInteresMoratorioPct: 5.0,
-      plazoTotalMeses: 24,
-      diaPagoMensual: 15,
-      saldoInsolutoActual: 0,
-      fechaApertura: new Date().toISOString().substring(0, 10)
-    };
-    this.mostrarFormulario = true;
-  }
+// Al abrir el formulario
+nuevoCredito() {
+  this.mostrarFormulario = true;
+  this.mostrarTabla = false;
+}
 
   cancelar() { this.mostrarFormulario = false; }
 }
