@@ -50,6 +50,29 @@
       <label class="form-label">CP</label>
       <input class="form-control" [(ngModel)]="clienteActual.codigoPostal" name="cp" maxlength="5" />
     </div>
+
+    <div class="row mt-3 border-top pt-3">
+  <div class="col-md-3 mb-3">
+    <label class="fw-bold">CP</label>
+    <input class="form-control" [(ngModel)]="clienteActual.codigoPostal" 
+           name="cp" (input)="buscarDireccion()" maxlength="5">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label>Estado</label>
+    <input class="form-control bg-light" [value]="estadoNombre" readonly placeholder="Automático...">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label>Municipio</label>
+    <input class="form-control bg-light" [value]="municipioNombre" readonly placeholder="Automático...">
+  </div>
+  <div class="col-md-3 mb-3">
+    <label>Colonia</label>
+    <select class="form-select" [(ngModel)]="clienteActual.idAsentamiento" name="idAsentamiento">
+      <option [ngValue]="undefined">Seleccione...</option>
+      <option *ngFor="let a of asentamientos" [ngValue]="a.id">{{ a.nombreColonia }}</option>
+    </select>
+  </div>
+</div>
     <div class="col-md-4 mb-3">
       <label class="form-label">Calle</label>
       <input class="form-control" [(ngModel)]="clienteActual.calle" name="calle" />
