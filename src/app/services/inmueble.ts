@@ -30,6 +30,12 @@ export interface Inmueble {
   niveles?: number;
   construccionM2?: number;
   caracteristicas?: string;
+  // CAMPOS DE DIRECCIÓN (Agrega estos)
+  codigoPostal?: string;
+  calle?: string;
+  numeroExterior?: string;
+  numeroInterior?: string;
+  idAsentamiento?: number;
   [key: string]: any; // 👈 Esto le dice a TypeScript: "Acepta cualquier otra propiedad extra"
 }
 

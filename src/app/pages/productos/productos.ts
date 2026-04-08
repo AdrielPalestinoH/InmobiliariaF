@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'; // Agr
 import { NgFor, NgIf, CurrencyPipe, DatePipe, NgClass } from '@angular/common'; // Agregamos NgClassimport { FormsModule } from '@angular/forms';
 import { InmuebleService, Inmueble } from '../../services/inmueble';
 import { FormsModule } from '@angular/forms'; // 👈 Agrega esta línea
+import { UsuarioService } from '../../services/usuario';
 @Component({
   selector: 'app-productos',
   standalone: true,
@@ -18,6 +19,10 @@ export class Productos implements OnInit {
   modoEdicion = false;
 selectedFiles: File[] = [];
   fotosPreview: string[] = [];
+asentamientos: any[] = [];
+municipioNombre: string = '';
+estadoNombre: string = '';
+
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   
@@ -31,6 +36,8 @@ selectedFiles: File[] = [];
     return;
   }
 
+
+  
   // Acumular los archivos y generar sus previews
   nuevosArchivos.forEach(file => {
     this.selectedFiles.push(file);
@@ -42,6 +49,29 @@ selectedFiles: File[] = [];
   // Limpiar el input físico para permitir volver a seleccionar el mismo archivo si se desea
   event.target.value = '';
 }
+
+
+
+// 2. Método para buscar la dirección (Reutilizamos la lógica de Clientes)
+buscarDireccion() {
+    if (this.inmuebleActual.codigoPostal?.length === 5) {
+      this.usuarioService.buscarPorCP(this.inmuebleActual.codigoPostal).subscribe({
+        next: (data) => {
+          this.asentamientos = data;
+          if (data && data.length > 0) {
+            this.municipioNombre = data[0].municipio.nombre;
+            this.estadoNombre = data[0].municipio.estado.nombre;
+          }
+        },
+        error: (err) => {
+          console.error('Error al buscar CP', err);
+          this.asentamientos = [];
+          this.municipioNombre = '';
+          this.estadoNombre = '';
+        }
+      });
+    }
+  }
 
 // Agregar este método para que el usuario pueda corregir si se equivoca de foto
 quitarFoto(index: number) {
@@ -81,28 +111,60 @@ if (this.fileInput) this.fileInput.nativeElement.value = '';
     this.inmuebleActual = this.initInmueble();
   }
 
-  private initInmueble(): Inmueble {
+  limpiarFormulario() {
+    this.selectedFiles = [];
+    this.fotosPreview = [];
+    if (this.fileInput) this.fileInput.nativeElement.value = '';
+    this.asentamientos = [];
+    this.municipioNombre = '';
+    this.estadoNombre = '';
+  }
+
+
+  inicializarInmueble() {
   return {
     titulo: '',
     precio: 0,
     nispc: '',
     claveCatastral: '',
+    id_tipo_inmueble: 0,
     manzana: '',
     lote: '',
     fraccion: '',
     terrenoM2: 0,
-    disponibilidad: 'DISPONIBLE',
-    idTipoInmueble: 1,
-    // Inicializar nuevos campos
-    banos: 0,
-    recamaras: 0,
-    estacionamientos: 0,
-    niveles: 1,
-    construccionM2: 0,
-    caracteristicas: ''
-    
+    // Nuevos campos planos:
+    calle: '',
+    codigoPostal: '',
+    idAsentamiento: undefined
   };
 }
+
+ // 4. Unificamos la inicialización en un solo lugar
+  private initInmueble(): Inmueble {
+    return {
+      titulo: '',
+      precio: 0,
+      nispc: '',
+      claveCatastral: '',
+      manzana: '',
+      lote: '',
+      fraccion: '',
+      terrenoM2: 0,
+      disponibilidad: 'DISPONIBLE',
+      idTipoInmueble: 1,
+      // Campos de dirección planos
+      calle: '',
+      codigoPostal: '',
+      idAsentamiento: undefined,
+      // Campos de detalle
+      banos: 0,
+      recamaras: 0,
+      estacionamientos: 0,
+      niveles: 1,
+      construccionM2: 0,
+      caracteristicas: ''
+    };
+  }
 
   
 
@@ -111,8 +173,9 @@ if (this.fileInput) this.fileInput.nativeElement.value = '';
 
   // ✅ inyectamos HttpClient aquí
   constructor(
-    private inmuebleService: InmuebleService,
-    private http: HttpClient  // 👈 agrega esto
+ private inmuebleService: InmuebleService,
+    private usuarioService: UsuarioService, 
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -132,28 +195,32 @@ cargarCatalogos() {
     error: err => console.error('Error al cargar tipos', err)
   });
 }
-  cargarInmuebles() {
+cargarInmuebles() {
     this.inmuebleService.listarInmuebles().subscribe({
       next: (data) => (this.inmuebles = data),
       error: (err) => console.error('Error al cargar inmuebles', err)
     });
   }
 
+  
 
-  buscar() {
-  const texto = this.filtro.toLowerCase();
-  return this.inmuebles.filter(i => 
-    (i.titulo?.toLowerCase().includes(texto)) || 
-    (i.nispc?.toLowerCase().includes(texto))
-  );
-}
+ buscar() {
+    const texto = this.filtro.toLowerCase();
+    return this.inmuebles.filter(i => 
+      (i.titulo?.toLowerCase().includes(texto)) || 
+      (i.nispc?.toLowerCase().includes(texto))
+    );
+  }
 
  
 
-  editarInmueble(i: Inmueble) {
+editarInmueble(i: any) {
     this.mostrarFormulario = true;
     this.modoEdicion = true;
     this.inmuebleActual = { ...i };
+    if (this.inmuebleActual.codigoPostal) {
+      this.buscarDireccion();
+    }
   }
 
   

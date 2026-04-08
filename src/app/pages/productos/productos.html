@@ -84,7 +84,55 @@
     <textarea class="form-control" [(ngModel)]="inmuebleActual.caracteristicas" name="caracteristicas" 
               placeholder="Ej: Alberca, cocina integral, seguridad..." rows="2"></textarea>
   </div>
+
+
+
+          <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-geo-alt"></i> Ubicación del Inmueble</h6>
+          
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Código Postal</label>
+            <input class="form-control border-primary" [(ngModel)]="inmuebleActual.codigoPostal" 
+                   name="codigoPostal" (input)="buscarDireccion()" maxlength="5" placeholder="12345">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Estado</label>
+            <input class="form-control bg-white" [value]="estadoNombre" readonly placeholder="...">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Municipio</label>
+            <input class="form-control bg-white" [value]="municipioNombre" readonly placeholder="...">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Colonia</label>
+            <select class="form-select" [(ngModel)]="inmuebleActual.idAsentamiento" name="idAsentamiento" required>
+              <option [ngValue]="undefined" disabled>Seleccione...</option>
+              <option *ngFor="let a of asentamientos" [ngValue]="a.idAsentamiento">
+                {{ a.nombreColonia }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Calle</label>
+            <input class="form-control" [(ngModel)]="inmuebleActual.calle" name="calle" placeholder="Nombre de la calle">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Num. Exterior</label>
+            <input class="form-control" [(ngModel)]="inmuebleActual.numeroExterior" name="numeroExterior">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">Num. Interior</label>
+            <input class="form-control" [(ngModel)]="inmuebleActual.numeroInterior" name="numeroInterior">
+          </div>
+        </div>
 </div>
+
+
 
      <div class="col-12 mb-4">
   <label class="form-label"><strong>Galería de Imágenes (Máximo 4)</strong></label>
