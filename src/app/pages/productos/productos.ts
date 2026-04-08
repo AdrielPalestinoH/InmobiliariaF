@@ -217,6 +217,8 @@ cargarInmuebles() {
  
 
 editarInmueble(i: any) {
+
+   console.log("Inmueble seleccionado para edición:", i); // Revisa esto en la consola para ver qué llega
     this.mostrarFormulario = true;
     this.modoEdicion = true;
 
