@@ -216,29 +216,49 @@ cargarInmuebles() {
 
  
 
-editarInmueble(i: Inmueble) {
-  this.mostrarFormulario = true;
-  this.modoEdicion = true;
-  
-  // 1. Clonamos el objeto para no editar la fila de la tabla directamente
-  this.inmuebleActual = { ...i };
+editarInmueble(i: any) {
+    this.mostrarFormulario = true;
+    this.modoEdicion = true;
 
-  // 2. Limpiamos selección de archivos nuevos (locales)
-  this.selectedFiles = [];
-  this.fotosPreview = [];
+    // Asignación manual para asegurar que los nombres coincidan con el HTML
+    this.inmuebleActual = {
+        id: i.id,
+        titulo: i.titulo,
+        precio: i.precio,
+        nispc: i.nispc,
+        claveCatastral: i.claveCatastral,
+        // Agregamos id_tipo_inmueble para el [(ngModel)] del HTML
+        id_tipo_inmueble: i.idTipoInmueble || i.id_tipo_inmueble,
+        // Agregamos idTipoInmueble para cumplir con la Interfaz 'Inmueble'
+        idTipoInmueble: i.idTipoInmueble || i.id_tipo_inmueble || 1,
+        
+        manzana: i.manzana,
+        lote: i.lote,
+        fraccion: i.fraccion,
+        terrenoM2: i.terrenoM2,
+        
+        // Agregamos disponibilidad para cumplir con la Interfaz
+        disponibilidad: i.disponibilidad || 'DISPONIBLE',
 
-  // 3. Si el inmueble ya tiene imágenes en la DB, las mostramos en la vista previa
-  if (i.imagenes && i.imagenes.length > 0) {
-    // Mapeamos las URLs que vienen de Java (Azure) al array de previews
-    this.fotosPreview = i.imagenes.map(img => img.url);
-    // Nota: Estas fotos son solo lectura visual. Si el usuario sube una nueva, 
-    // tu lógica de Java actual reemplazará todas.
-  }
+        banos: i.banos,
+        recamaras: i.recamaras,
+        estacionamientos: i.estacionamientos,
+        niveles: i.niveles,
+        construccionM2: i.construccionM2,
+        caracteristicas: i.caracteristicas,
+        calle: i.calle,
+        codigoPostal: i.codigoPostal,
+        idAsentamiento: i.idAsentamiento
+    };
 
-  // 4. Disparamos la búsqueda de dirección para llenar Estado y Municipio
-  if (this.inmuebleActual.codigoPostal) {
-    this.buscarDireccion();
-  }
+    // Cargar la dirección (Estado, Municipio y Colonias)
+    if (this.inmuebleActual.codigoPostal) {
+        this.buscarDireccion();
+    }
+
+    // Cargar fotos existentes en la vista previa
+    this.selectedFiles = [];
+    this.fotosPreview = i.imagenes ? i.imagenes.map((img: any) => img.url) : [];
 }
 
   
