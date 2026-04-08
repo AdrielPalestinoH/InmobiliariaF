@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { UsuarioService, Usuario } from '../../services/usuario';
 import { NgFor, NgIf, NgClass } from '@angular/common'; // <--- AGREGA NgClass AQUÍ
 import { RouterModule } from '@angular/router'; // Asegúrate de tenerlo para otros links
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-clientes',
@@ -18,10 +20,22 @@ export class Clientes implements OnInit {
   modoEdicion = false;
   tipos: any[] = []; // Para cargar los roles si fuera necesario
 
+  asentamientos: any[] = [];
+  municipioNombre: string = '';
+  estadoNombre: string = '';
+  
+  // Añadimos la URL de catálogos
+  private catalogosUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/catalogos';
+
+
   clienteActual: Usuario = this.inicializarCliente();
 
-  constructor(private usuarioService: UsuarioService) {}
+  constructor(private usuarioService: UsuarioService,private http: HttpClient) {}
 
+  
+  buscarPorCP(cp: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.catalogosUrl}/cp/${cp}`);
+  }
   ngOnInit() {
     this.cargarClientes();
   }
@@ -41,6 +55,24 @@ export class Clientes implements OnInit {
     };
   }
 
+
+  buscarDireccion() {
+    if (this.clienteActual.codigoPostal?.length === 5) {
+      this.usuarioService.buscarPorCP(this.clienteActual.codigoPostal).subscribe({
+        next: (data) => {
+          this.asentamientos = data;
+          if (data && data.length > 0) {
+            this.municipioNombre = data[0].municipio.nombre;
+            this.estadoNombre = data[0].municipio.estado.nombre;
+          }
+        },
+        error: (err) => {
+          console.error('Error al buscar CP', err);
+          this.asentamientos = [];
+        }
+      });
+    }
+  }
   cargarClientes() {
     this.usuarioService.listar().subscribe({
       next: (data) => (this.clientes = data),
@@ -51,19 +83,25 @@ export class Clientes implements OnInit {
   editarCliente(c: Usuario) {
     this.mostrarFormulario = true;
     this.modoEdicion = true;
-    // Clonamos el objeto y nos aseguramos de mapear role si viene de la lista de tiposUsuario
     this.clienteActual = { ...c };
+    
+    // Si ya tiene CP, cargamos los datos de dirección automáticamente
+    if (this.clienteActual.codigoPostal) {
+      this.buscarDireccion();
+    }
   }
 
   nuevoClienteForm() {
     this.mostrarFormulario = !this.mostrarFormulario;
     this.modoEdicion = false;
     this.clienteActual = this.inicializarCliente();
+    this.asentamientos = [];
+    this.municipioNombre = '';
+    this.estadoNombre = '';
   }
 
   guardarCliente() {
     if (this.modoEdicion) {
-      // Lógica de Actualizar (necesitas implementar 'actualizar' en tu service)
       this.usuarioService.actualizar(this.clienteActual.id!, this.clienteActual).subscribe({
         next: () => {
           alert('Cliente actualizado con éxito ✅');
@@ -72,7 +110,6 @@ export class Clientes implements OnInit {
         error: (err) => alert('Error al actualizar')
       });
     } else {
-      // Lógica de Crear
       this.usuarioService.crear(this.clienteActual).subscribe({
         next: () => {
           alert('Cliente registrado y correo enviado ✅');
@@ -88,7 +125,7 @@ export class Clientes implements OnInit {
     this.cargarClientes();
   }
 
-  buscar() {
+ buscar() {
     const texto = this.filtro.toLowerCase();
     return this.clientes.filter(c => 
       (c.nombres?.toLowerCase().includes(texto)) || 

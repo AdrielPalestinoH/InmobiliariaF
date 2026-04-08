@@ -21,6 +21,7 @@ export interface Usuario {
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
+  private catalogosUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/catalogos';
   private baseUrl = 'https://inmobiliaria-api-cvewh6fphthve7ad.westus-01.azurewebsites.net/api/v1/usuarios';
   constructor(private http: HttpClient) {}
 
@@ -38,5 +39,10 @@ listar(): Observable<Usuario[]> {
     // Al quitar '/usuarios/', la URL quedará: .../api/v1/usuarios/{id}
     // Que es exactamente lo que espera tu @PutMapping("/{id}")
     return this.http.put(`${this.baseUrl}/${id}`, usuario);
+  }
+
+  // ESTA ES LA FUNCIÓN QUE FALTABA
+  buscarPorCP(cp: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.catalogosUrl}/cp/${cp}`);
   }
 }
