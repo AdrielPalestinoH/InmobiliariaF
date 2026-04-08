@@ -74,20 +74,18 @@ buscarDireccion() {
 
   guardar() {
     // Mapeamos al UsuarioDTO que espera tu Controller de Java
-    const usuarioDTO = {
-      nombres: this.nuevo.nombres,
-      apellidos: this.nuevo.apellidos,
-      email: this.nuevo.email,
-      telefono: this.nuevo.telefono,
-      role: this.tipos.find(t => t.id_tipo_usuario === this.tipoId)?.role,
-      direccion: { // Esto llena los campos de calle, cp, etc. en el back
-        calle: this.nuevo.calle,
-        codigoPostal: this.nuevo.codigoPostal,
-        numeroExterior: this.nuevo.numeroExterior,
-        numeroInterior: this.nuevo.numeroInterior,
-        idAsentamiento: this.nuevo.idAsentamiento
-      }
-    };
+  const usuarioDTO = {
+    nombres: this.nuevo.nombres,
+    apellidos: this.nuevo.apellidos,
+    email: this.nuevo.email,
+    telefono: this.nuevo.telefono,
+    role: this.tipos.find(t => t.id_tipo_usuario === this.tipoId)?.role,
+    calle: this.nuevo.calle,
+    codigoPostal: this.nuevo.codigoPostal,
+    numeroExterior: this.nuevo.numeroExterior,
+    numeroInterior: this.nuevo.numeroInterior,
+    idAsentamiento: this.nuevo.idAsentamiento
+  };
 
     this.http.post(`${this.API_AZURE}/registro`, usuarioDTO).subscribe({
       next: () => {
