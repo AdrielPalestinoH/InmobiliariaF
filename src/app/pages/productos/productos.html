@@ -132,16 +132,26 @@
 
 
 
-     <div class="col-12 mb-4">
-  <label class="form-label"><strong>Galería de Imágenes (Máximo 4)</strong></label>
+ <div class="col-12 mb-4">
+  <label class="form-label">
+    <strong>
+      {{ modoEdicion && selectedFiles.length === 0 ? 'Fotos Actuales' : 'Galería de Imágenes (Máximo 4)' }}
+    </strong>
+  </label>
+  
   <input #fileInput type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" multiple>
-  <small class="text-muted">Selecciona hasta 4 fotos. Puedes elegirlas todas de una vez o de una en una.</small>
+  <small class="text-muted" *ngIf="modoEdicion">
+    * Si seleccionas fotos nuevas, se reemplazarán las anteriores.
+  </small>
 
   <div class="d-flex gap-3 mt-3" *ngIf="fotosPreview.length > 0">
     <div *ngFor="let img of fotosPreview; let i = index" class="position-relative">
       <img [src]="img" style="width: 80px; height: 80px; object-fit: cover;" class="border rounded shadow-sm">
-      <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" 
+      
+      <button *ngIf="selectedFiles.length > 0" type="button" 
+              class="btn btn-danger btn-sm position-absolute top-0 end-0" 
               style="padding: 0px 5px;" (click)="quitarFoto(i)">×</button>
+      
       <span class="badge position-absolute bottom-0 start-0 m-1 bg-primary" style="font-size: 0.6rem;">
         {{ i === 0 ? 'Principal' : 'Foto ' + (i+1) }}
       </span>

@@ -36,7 +36,9 @@ estadoNombre: string = '';
     return;
   }
 
-
+if (this.modoEdicion && this.selectedFiles.length === 0) {
+    this.fotosPreview = [];
+  }
   
   // Acumular los archivos y generar sus previews
   nuevosArchivos.forEach(file => {
@@ -214,14 +216,30 @@ cargarInmuebles() {
 
  
 
-editarInmueble(i: any) {
-    this.mostrarFormulario = true;
-    this.modoEdicion = true;
-    this.inmuebleActual = { ...i };
-    if (this.inmuebleActual.codigoPostal) {
-      this.buscarDireccion();
-    }
+editarInmueble(i: Inmueble) {
+  this.mostrarFormulario = true;
+  this.modoEdicion = true;
+  
+  // 1. Clonamos el objeto para no editar la fila de la tabla directamente
+  this.inmuebleActual = { ...i };
+
+  // 2. Limpiamos selección de archivos nuevos (locales)
+  this.selectedFiles = [];
+  this.fotosPreview = [];
+
+  // 3. Si el inmueble ya tiene imágenes en la DB, las mostramos en la vista previa
+  if (i.imagenes && i.imagenes.length > 0) {
+    // Mapeamos las URLs que vienen de Java (Azure) al array de previews
+    this.fotosPreview = i.imagenes.map(img => img.url);
+    // Nota: Estas fotos son solo lectura visual. Si el usuario sube una nueva, 
+    // tu lógica de Java actual reemplazará todas.
   }
+
+  // 4. Disparamos la búsqueda de dirección para llenar Estado y Municipio
+  if (this.inmuebleActual.codigoPostal) {
+    this.buscarDireccion();
+  }
+}
 
   
 }
